@@ -1,5 +1,10 @@
-#!/usr/bin/env php
+#!/usr/bin/php
 <?php
+
+if (version_compare(PHP_VERSION, '7.1.3') < 0) {
+    echo 'PHP 7.1.3 is the minimal supported version.' . PHP_EOL;
+    exit(0);
+}
 
 define('LARAVEL_START', microtime(true));
 

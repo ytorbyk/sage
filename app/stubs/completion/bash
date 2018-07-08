@@ -1,0 +1,144 @@
+_sage()
+{
+    local cur script coms opts com
+    COMPREPLY=()
+    _get_comp_words_by_ref -n : cur words
+
+    # for an alias, get the real script behind it
+    if [[ $(type -t ${words[0]}) == "alias" ]]; then
+        script=$(alias ${words[0]} | sed -E "s/alias ${words[0]}='(.*)'/\1/")
+    else
+        script=${words[0]}
+    fi
+
+    # lookup for command
+    for word in ${words[@]:1}; do
+        if [[ $word != -* ]]; then
+            com=$word
+            break
+        fi
+    done
+
+    # completing for an option
+    if [[ ${cur} == --* ]] ; then
+        opts="--help --quiet --verbose --version --ansi --no-ansi --no-interaction --env"
+
+        case "$com" in
+
+            help)
+            opts="${opts} --format --raw"
+            ;;
+
+            list)
+            opts="${opts} --raw --format"
+            ;;
+
+            apache:host)
+            opts="${opts} --path --not-secure"
+            ;;
+
+            apache:host-revoke)
+            opts="${opts} "
+            ;;
+
+            apache:restart)
+            opts="${opts} "
+            ;;
+
+            apache:start)
+            opts="${opts} "
+            ;;
+
+            apache:stop)
+            opts="${opts} "
+            ;;
+
+            db:create)
+            opts="${opts} --force"
+            ;;
+
+            db:drop)
+            opts="${opts} "
+            ;;
+
+            dns:restart)
+            opts="${opts} "
+            ;;
+
+            dns:start)
+            opts="${opts} "
+            ;;
+
+            dns:stop)
+            opts="${opts} "
+            ;;
+
+            env:install)
+            opts="${opts} "
+            ;;
+
+            env:uninstall)
+            opts="${opts} --force"
+            ;;
+
+            mysql:restart)
+            opts="${opts} "
+            ;;
+
+            mysql:start)
+            opts="${opts} "
+            ;;
+
+            mysql:stop)
+            opts="${opts} "
+            ;;
+
+            php:ioncube)
+            opts="${opts} --skip"
+            ;;
+
+            php:switch)
+            opts="${opts} --skip"
+            ;;
+
+            php:xdebug)
+            opts="${opts} --skip --remote-autostart"
+            ;;
+
+            secure:generate)
+            opts="${opts} "
+            ;;
+
+            secure:revoke)
+            opts="${opts} "
+            ;;
+
+            site:link)
+            opts="${opts} --path --not-secure"
+            ;;
+
+            site:unlink)
+            opts="${opts} "
+            ;;
+
+        esac
+
+        COMPREPLY=($(compgen -W "${opts}" -- ${cur}))
+        __ltrim_colon_completions "$cur"
+
+        return 0;
+    fi
+
+    # completing for a command
+    if [[ $cur == $com ]]; then
+        coms="help list apache:host apache:host-revoke apache:restart apache:start apache:stop db:create db:drop dns:restart dns:start dns:stop env:install env:uninstall mysql:restart mysql:start mysql:stop php:ioncube php:switch php:xdebug secure:generate secure:revoke site:link site:unlink"
+
+        COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
+        __ltrim_colon_completions "$cur"
+
+        return 0
+    fi
+}
+
+complete -o default -F _sage sage
+complete -o default -F _sage sage.phar

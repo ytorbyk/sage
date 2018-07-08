@@ -1,0 +1,31 @@
+<?php
+
+namespace App\Commands\MySql;
+
+use LaravelZero\Framework\Commands\Command;
+
+class RestartCommand extends Command
+{
+    const COMMAND = 'mysql:restart';
+
+    /**
+     * @var string
+     */
+    protected $signature = self::COMMAND;
+
+    /**
+     * @var string
+     */
+    protected $description = 'Restart MySQL service';
+
+    /**
+     * @return void
+     */
+    public function handle(): void
+    {
+        $this->info('MySQL Restart:');
+
+        $this->call(StopCommand::COMMAND);
+        $this->call(StartCommand::COMMAND);
+    }
+}
