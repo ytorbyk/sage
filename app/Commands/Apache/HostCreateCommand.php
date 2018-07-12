@@ -72,12 +72,12 @@ class HostCreateCommand extends Command
             $this->call(GenerateCommand::COMMAND, ['domain' => $domain, 'aliases' => $aliases]);
         }
 
-        $this->job('Create Apache Virtual Host', function () use ($hostPath) {
+        $this->job('Create Apache Virtual Host', function () use ($hostPath, $secure) {
             $this->apache->configureVHost(
                 $hostPath,
                 $this->argument('domain'),
                 $this->argument('aliases'),
-                $this->option('secure')
+                $secure
             );
         });
     }
