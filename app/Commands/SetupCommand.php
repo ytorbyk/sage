@@ -11,10 +11,13 @@ class SetupCommand extends Command
      */
     private const INDENT = '    ';
 
+    const COMMAND = 'env:setup';
+
     /**
      * @var string
      */
-    protected $signature = 'env:setup';
+    protected $signature = self::COMMAND
+    . ' {--o|overwrite-config : Overwrite config with default values}';
 
     /**
      * @var string
@@ -65,16 +68,6 @@ class SetupCommand extends Command
      */
     public function handle(): void
     {
-        if (!$this->files->exists(config('env.home_config')) || $this->confirm('Config already exists, do you want to overwrite?')) {
-            $this->writeCOnfig();
-        }
-    }
-
-    /**
-     * @return void
-     */
-    private function writeCOnfig(): void
-    {
         if (!$this->brew->isBrewAvailable()) {
             $this->info('Brew is not installed, it is required. Run the next command:');
             $this->comment('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"');
@@ -84,23 +77,34 @@ class SetupCommand extends Command
             $this->files->ensureDirExists(config('env.home'));
         });
 
-        $this->task('Create default config', function () {
-            $content = $this->varExportShort($this->loadDefaultConfig(), 1);
+        if (!$this->files->exists(config('env.home_config')) || $this->option('overwrite-config')) {
+            $this->writeConfig(true);
+            $this->info('Default config created, adjust it if needed.');
+        } else {
+            $this->writeConfig();
+        }
+
+        $this->comment('Config: ' . config('env.home_config'));
+        $this->comment('Run: sage env:install');
+    }
+
+    /**
+     * @param bool $overwrite
+     * @return void
+     */
+    private function writeConfig(bool $overwrite = false): void
+    {
+        $config = $this->loadDefaultConfig();
+        if (!$overwrite) {
+            $config = array_replace_recursive($config, config('env'));
+        }
+
+        $this->task('Generate config', function () use ($config) {
+            $content = $this->varExportShort($config, 1);
             $this->files->put(
                 config('env.home_config'), '<?php' . PHP_EOL . PHP_EOL . 'return ' . $content . ';' . PHP_EOL
             );
         });
-
-        $this->cli->run('open ' . config('env.home_config'));
-        $this->notify(
-            config('app.name'),
-            'Default config created, adjust it if needed.' . PHP_EOL .
-            'Run sage env:install'
-        );
-
-        $this->info('Default config created, adjust it if needed.');
-        $this->comment('Config: ' . config('env.home_config'));
-        $this->info('Run `sage env:install`');
     }
 
     /**
