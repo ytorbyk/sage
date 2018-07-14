@@ -48,13 +48,15 @@ class InstallCommand extends Command
     {
         $this->info('Install secure stuff:');
 
-        $isInstalled = $this->job(sprintf('Check if [%s] is already installed', config('env.secure.formula')), function () {
-            return $this->brew->isInstalled(config('env.secure.formula'));
+        $sslFormula = config('env.secure.formula');
+
+        $isInstalled = $this->job(sprintf('Check if [%s] is already installed', $sslFormula), function () use ($sslFormula) {
+            return $this->brew->isInstalled($sslFormula);
         });
 
         if (!$isInstalled) {
-            $this->job(sprintf('Install [%s] Brew formula', config('env.secure.formula')), function () {
-                $this->brew->install('openssl');
+            $this->job(sprintf('Install [%s] Brew formula', $sslFormula), function () use ($sslFormula) {
+                $this->brew->install($sslFormula);
             });
         }
 
