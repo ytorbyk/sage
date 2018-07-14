@@ -100,10 +100,11 @@ class SwitchCommand extends Command
      */
     private function getVersion()
     {
-        $option = $this->menu('Supported versions', config('env.php.versions'))
+        $option = $this->menu('Switch PHP', config('env.php.versions'))
             ->setForegroundColour('green')
             ->setBackgroundColour('black')
             ->setExitButtonText('Cancel')
+            ->addLineBreak('-')
             ->open();
 
         return $option !== null ? config('env.php.versions')[$option] : false;

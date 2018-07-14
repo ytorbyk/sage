@@ -110,12 +110,13 @@ class InstallCommand extends Command
      */
     private function updateSecureSettings(): void
     {
-        $this->output->writeln('<fg=red>Enter MySQL password on next prompt [Default: empty (just press enter)]!</>');
+        $mysqlPasswordMessage = 'Enter previously installed MySQL root password. If was not installed any, just press enter (empty password)!';
+        $this->output->writeln('<fg=red>' . $mysqlPasswordMessage . '</>');
         $this->job(sprintf('Update MySQL Password to "%s"', config('env.mysql.password')), function () {
             $this->cli->run(sprintf('mysql -u root -p -e "UPDATE mysql.user SET authentication_string=PASSWORD(\'%s\') WHERE User=\'root\'"', config('env.mysql.password')));
         });
 
-        $this->output->writeln('<fg=red>Enter MySQL password on next prompt [Default: empty (just press enter)]!</>');
+        $this->output->writeln('<fg=red>' . $mysqlPasswordMessage . '</>');
         $this->job('Flush MySQL privileges', function () {
             $this->cli->run('mysql -u root -p -e "FLUSH PRIVILEGES;"');
         });
