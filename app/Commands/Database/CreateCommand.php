@@ -16,7 +16,7 @@ class CreateCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Create MySQL Database';
+    protected $description = 'Create Database';
 
     /**
      * @var \App\Components\CommandLine

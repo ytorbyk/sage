@@ -17,6 +17,14 @@ return [
         'data_dir_path' => '/usr/local/var/mysql'
     ],
 
+    'progress' => [
+        'formula' => 'pv'
+    ],
+
+    'db' => [
+        'dump_path' => config('env.home') . DIRECTORY_SEPARATOR . 'databases',
+    ],
+
     'apache' => [
         'formula' => 'httpd',
         'vhosts' => config('env.home') . DIRECTORY_SEPARATOR . 'apache-vhosts',

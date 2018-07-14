@@ -16,7 +16,7 @@ class DropCommand extends Command
     /**
      * @var string
      */
-    protected $description = 'Drop MySQL Database';
+    protected $description = 'Drop Database';
 
     /**
      * @var \App\Components\CommandLine

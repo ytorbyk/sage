@@ -39,4 +39,40 @@ class Files extends \Illuminate\Filesystem\Filesystem
     {
         return readlink($path);
     }
+
+    /**
+     * @param float $size
+     * @return string
+     */
+    public function getFormatedFileSize(float $size): string
+    {
+        $arBytes = [
+            [
+                'tag' => 'GB',
+                'value' => pow(1024, 3)
+            ],
+            [
+                'tag' => 'MB',
+                'value' => pow(1024, 2)
+            ],
+            [
+                'tag' => 'KB',
+                'value' => 1024
+            ],
+            [
+                'tag' => 'B',
+                'value' => 1
+            ]
+        ];
+
+        $result = '0';
+        foreach ($arBytes as $arItem) {
+            if ($size >= $arItem['value']) {
+                $result = $size / $arItem['value'];
+                $result = str_replace('.', ',' , strval(round($result, 2))) . ' ' . $arItem['tag'];
+                break;
+            }
+        }
+        return $result;
+    }
 }

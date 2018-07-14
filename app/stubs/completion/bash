@@ -41,6 +41,10 @@ _sage()
             opts="${opts} "
             ;;
 
+            apache:install)
+            opts="${opts} "
+            ;;
+
             apache:restart)
             opts="${opts} "
             ;;
@@ -53,11 +57,31 @@ _sage()
             opts="${opts} "
             ;;
 
+            apache:uninstall)
+            opts="${opts} "
+            ;;
+
             db:create)
             opts="${opts} --force"
             ;;
 
             db:drop)
+            opts="${opts} "
+            ;;
+
+            db:export)
+            opts="${opts} "
+            ;;
+
+            db:import)
+            opts="${opts} "
+            ;;
+
+            db:install)
+            opts="${opts} "
+            ;;
+
+            dns:install)
             opts="${opts} "
             ;;
 
@@ -73,12 +97,28 @@ _sage()
             opts="${opts} "
             ;;
 
+            dns:uninstall)
+            opts="${opts} "
+            ;;
+
+            env:completion)
+            opts="${opts} "
+            ;;
+
             env:install)
             opts="${opts} "
             ;;
 
+            env:setup)
+            opts="${opts} --overwrite-config"
+            ;;
+
             env:uninstall)
             opts="${opts} --force"
+            ;;
+
+            mysql:install)
+            opts="${opts} "
             ;;
 
             mysql:restart)
@@ -93,6 +133,14 @@ _sage()
             opts="${opts} "
             ;;
 
+            mysql:uninstall)
+            opts="${opts} --force"
+            ;;
+
+            php:install)
+            opts="${opts} "
+            ;;
+
             php:ioncube)
             opts="${opts} --skip"
             ;;
@@ -101,11 +149,19 @@ _sage()
             opts="${opts} --skip"
             ;;
 
+            php:uninstall)
+            opts="${opts} "
+            ;;
+
             php:xdebug)
             opts="${opts} --skip --remote-autostart"
             ;;
 
             secure:generate)
+            opts="${opts} "
+            ;;
+
+            secure:install)
             opts="${opts} "
             ;;
 
@@ -131,7 +187,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:restart apache:start apache:stop db:create db:drop dns:restart dns:start dns:stop env:install env:uninstall mysql:restart mysql:start mysql:stop php:ioncube php:switch php:xdebug secure:generate secure:revoke site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install dns:install dns:restart dns:start dns:stop dns:uninstall env:completion env:install env:setup env:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug secure:generate secure:install secure:revoke site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

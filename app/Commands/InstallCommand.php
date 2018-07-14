@@ -5,6 +5,7 @@ namespace App\Commands;
 use LaravelZero\Framework\Commands\Command;
 use App\Commands\DnsMasq\InstallCommand as DnsMasqInstall;
 use App\Commands\MySql\InstallCommand as MySqlInstall;
+use App\Commands\Database\InstallCommand as DatabaseInstall;
 use App\Commands\Apache\InstallCommand as ApacheInstall;
 use App\Commands\Secure\InstallCommand as SecureInstall;
 use App\Commands\Php\InstallCommand as PhpInstall;
@@ -66,6 +67,7 @@ class InstallCommand extends Command
 
         $this->call(DnsMasqInstall::COMMAND);
         $this->call(MySqlInstall::COMMAND);
+        $this->call(DatabaseInstall::COMMAND);
         $this->call(ApacheInstall::COMMAND);
         $this->call(SecureInstall::COMMAND);
         $this->call(PhpInstall::COMMAND);
