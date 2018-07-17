@@ -14,7 +14,7 @@ class ExportCommand extends Command
      * @var string
      */
     protected $signature = self::COMMAND
-        . ' {name : Database name}'
+        . ' {name? : Database name}'
         . ' {file? : File name}';
 
     /**
@@ -27,8 +27,12 @@ class ExportCommand extends Command
      */
     public function handle(): void
     {
-        $dbName = $this->argument('name');
-        $file = $this->argument('file') ?: $dbName;
+        $dbName = $this->argument('name') ?: $this->getDbName();
+        if (!$dbName) {
+            return;
+        }
+
+        $file = $this->argument('file') ?: $dbName . '.' . date('d-m-Y');
 
         $dumpPath = $this->getDumpPath($this->getDumpName($file));
         $packCommand = $this->getPackCommand($dumpPath);
@@ -40,6 +44,17 @@ class ExportCommand extends Command
 
         $this->task(sprintf('DB %s exported', $dbName));
         $this->comment(sprintf('Dump path: %s', $dumpPath));
+    }
+
+    /**
+     * @return string|null
+     */
+    private function getDbName(): ?string
+    {
+        $dbs =  Cli::run('mysql -N -e "SHOW DATABASES"');
+        $dbs = array_filter(explode(PHP_EOL, $dbs));
+        $dbs = array_diff($dbs, ['sys', 'mysql', 'performance_schema', 'information_schema']);
+        return $this->askWithCompletion('Enter DB name', $dbs);
     }
 
     /**
