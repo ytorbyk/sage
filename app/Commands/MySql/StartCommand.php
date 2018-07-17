@@ -2,7 +2,8 @@
 
 namespace App\Commands\MySql;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\BrewService;
 
 class StartCommand extends Command
 {
@@ -19,27 +20,12 @@ class StartCommand extends Command
     protected $description = 'Start MySQL service';
 
     /**
-     * @var \App\Components\Brew\Service
-     */
-    private $brewService;
-
-    /**
-     * @param \App\Components\Brew\Service $brewService
-     */
-    public function __construct(
-        \App\Components\Brew\Service $brewService
-    ) {
-        $this->brewService = $brewService;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        $this->job('MySQL Start', function () {
-            $this->brewService->start(config('env.mysql.formula'));
+        $this->task('MySQL Start', function () {
+            BrewService::start(config('env.mysql.formula'));
         });
     }
 }

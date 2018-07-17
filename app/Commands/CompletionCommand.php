@@ -2,50 +2,25 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\File;
+use App\Facades\Stub;
 
 class CompletionCommand extends Command
 {
+    const COMMAND = 'env:completion';
+
     /**
      * @var string
      */
-    protected $signature = 'env:completion {shell=bash : Supported shells: bash}';
+    protected $signature = self::COMMAND
+        . ' {shell=bash : Supported shells: bash}';
 
     /**
      * @var string
      */
     protected $description = 'Install and configure completion for the application';
-
-    /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs
-    ) {
-        $this->brew = $brew;
-        $this->files = $files;
-        $this->stubs = $stubs;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -70,27 +45,27 @@ class CompletionCommand extends Command
      */
     private function setupForBash(): void
     {
-        $this->job(sprintf('Ensure [%s] installed', config('env.completion.formula')), function () {
-            $this->brew->ensureInstalled(config('env.completion.formula'));
+        $this->task(sprintf('Ensure [%s] installed', config('env.completion.formula')), function () {
+            Brew::ensureInstalled(config('env.completion.formula'));
         });
 
-        $this->job('Copy completion script', function () {
-            $this->files->copy(
-                $this->stubs->getPath('completion/bash'),
+        $this->task('Copy completion script', function () {
+            File::copy(
+                Stub::getPath('completion/bash'),
                 config('env.completion.brew_config_completion_path')
             );
         });
 
-        $this->job('Include Brew completion to Bash', function () {
+        $this->task('Include Brew completion to Bash', function () {
 
             $sourceText = config('env.completion.brew_completion');
             $bashrcPath = config('env.completion.bashrc_path');
             $bashProfilePath = config('env.completion.bash_profile_path');
 
-            if ((!$this->files->exists($bashrcPath) || strpos($this->files->get($bashrcPath), $sourceText) === false)
-                && (!$this->files->exists($bashProfilePath) || strpos($this->files->get($bashProfilePath), $sourceText) === false)
+            if ((!File::exists($bashrcPath) || strpos(File::get($bashrcPath), $sourceText) === false)
+                && (!File::exists($bashProfilePath) || strpos(File::get($bashProfilePath), $sourceText) === false)
             ) {
-                $this->files->append($bashProfilePath, $sourceText . PHP_EOL);
+                File::append($bashProfilePath, PHP_EOL . $sourceText . PHP_EOL);
             }
         });
     }

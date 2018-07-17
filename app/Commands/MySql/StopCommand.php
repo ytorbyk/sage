@@ -2,7 +2,8 @@
 
 namespace App\Commands\MySql;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\BrewService;
 
 class StopCommand extends Command
 {
@@ -19,27 +20,12 @@ class StopCommand extends Command
     protected $description = 'Stop MySQL service';
 
     /**
-     * @var \App\Components\Brew\Service
-     */
-    private $brewService;
-
-    /**
-     * @param \App\Components\Brew\Service $brewService
-     */
-    public function __construct(
-        \App\Components\Brew\Service $brewService
-    ) {
-        $this->brewService = $brewService;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        $this->job('MySQL Stop', function () {
-            $this->brewService->stop(config('env.mysql.formula'));
+        $this->task('MySQL Stop', function () {
+            BrewService::stop(config('env.mysql.formula'));
         });
     }
 }

@@ -2,7 +2,11 @@
 
 namespace App\Commands\Apache;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\BrewService;
+use App\Facades\Cli;
+use App\Facades\File;
 
 class UninstallCommand extends Command
 {
@@ -11,43 +15,13 @@ class UninstallCommand extends Command
     /**
      * @var string
      */
-    protected $signature = self::COMMAND;
+    protected $signature = self::COMMAND
+        . ' {--f|force : Delete virtual host\'s configs}';
 
     /**
      * @var string
      */
     protected $description = 'Uninstall Apache and remove configuration';
-
-    /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\CommandLine $cli,
-        \App\Components\Files $files
-    ) {
-        $this->brew = $brew;
-        $this->cli = $cli;
-        $this->files = $files;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -56,27 +30,25 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall Apache:');
 
-        $this->job('Ensure Apache is not running', function () {
-            $this->cli->runQuietly('sudo apachectl stop');
-            $this->cli->runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
-            $this->cli->runQuietly(sprintf('sudo brew services stop ', config('env.apache.formula')));
+        $this->task('Ensure Apache is not running', function () {
+            Cli::runQuietly('sudo apachectl stop');
+            Cli::runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
+
+            if (Brew::isInstalled(config('env.apache.formula'))) {
+                BrewService::stop(config('env.apache.formula'));
+            }
         });
 
-        $isInstalled = $this->job('Need to be uninstalled?', function () {
-            return $this->brew->isInstalled(config('env.apache.formula')) ?: 'Uninstalled. Skip';
+        $this->uninstallFormula(config('env.apache.formula'));
+
+        $this->task('Delete Apache configuration', function () {
+            File::delete(config('env.apache.config'));
+            File::deleteDirectory(config('env.apache.localhost_path'));
+            File::deleteDirectory(config('env.apache.brew_config_dir_path'));
         });
 
-        if ($isInstalled === true) {
-            $this->job(sprintf('Uninstall %s Brew formula', config('env.apache.formula')), function () {
-                $this->brew->uninstall(config('env.apache.formula'), ['--force']);
-            });
+        if ($this->option('force')) {
+            File::deleteDirectory(config('env.apache.vhosts'));
         }
-
-        $this->job('Delete Apache configuration', function () {
-            $this->files->delete(config('env.apache.config'));
-            //$this->files->deleteDirectory(config('env.apache.vhosts'));
-            $this->files->deleteDirectory(config('env.apache.localhost_path'));
-            $this->files->deleteDirectory(config('env.apache.brew_config_dir_path'));
-        });
     }
 }

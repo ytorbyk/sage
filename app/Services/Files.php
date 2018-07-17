@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Components;
+namespace App\Services;
 
 class Files extends \Illuminate\Filesystem\Filesystem
 {
@@ -11,7 +11,7 @@ class Files extends \Illuminate\Filesystem\Filesystem
      * @param bool $force
      * @return void
      */
-    public function ensureDirExists(string $path, int $mode = 0755, bool $recursive = true, bool $force = true)
+    public function ensureDirExists(string $path, int $mode = 0755, bool $recursive = true, bool $force = true): void
     {
         if (!$this->isDirectory($path)) {
             $this->makeDirectory($path, $mode, $recursive, $force);
@@ -21,10 +21,10 @@ class Files extends \Illuminate\Filesystem\Filesystem
     /**
      * Determine if the given path is a symbolic link.
      *
-     * @param  string  $path
+     * @param string $path
      * @return bool
      */
-    public function isLink($path)
+    public function isLink(string $path): bool
     {
         return is_link($path);
     }
@@ -32,10 +32,10 @@ class Files extends \Illuminate\Filesystem\Filesystem
     /**
      * Resolve the given symbolic link.
      *
-     * @param  string  $path
-     * @return string
+     * @param string $path
+     * @return string|false
      */
-    public function readLink($path)
+    public function readLink(string $path)
     {
         return readlink($path);
     }

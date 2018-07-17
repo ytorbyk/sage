@@ -1,78 +1,20 @@
 <?php
 
-namespace App\Components\Site;
+namespace App\Services;
+
+use App\Facades\Secure;
+use App\Facades\Stub;
+use App\Facades\File;
 
 class Apache
 {
-    /**
-     * @var \App\Components\Brew\Service
-     */
-    private $brewService;
-
-    /**
-     * @var \App\Components\Site\Secure
-     */
-    private $secure;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @param \App\Components\Brew\Service $brewService
-     * @param \App\Components\Site\Secure $secure
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     */
-    public function __construct(
-        \App\Components\Brew\Service $brewService,
-        \App\Components\Site\Secure $secure,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs
-    ) {
-        $this->brewService = $brewService;
-        $this->secure = $secure;
-        $this->files = $files;
-        $this->stubs = $stubs;
-    }
-
-    /**
-     * @return void
-     */
-    public function start(): void
-    {
-        $this->brewService->start(config('env.apache.formula'), true);
-    }
-
-    /**
-     * @return void
-     */
-    public function stop(): void
-    {
-        $this->brewService->stop(config('env.apache.formula'));
-    }
-
-    /**
-     * @return void
-     */
-    public function restart(): void
-    {
-        $this->brewService->restart(config('env.apache.formula'), true);
-    }
-
     /**
      * @param string $domain
      * @return void
      */
     public function deleteVHost(string $domain): void
     {
-        $this->files->delete($this->getConfPath($domain));
+        File::delete($this->getConfPath($domain));
     }
 
     /**
@@ -82,9 +24,9 @@ class Apache
      * @param bool $secure
      * @return void
      */
-    public function configureVHost(string $documentRoot, string $domain, array $aliases = [], bool $secure = true)
+    public function configureVHost(string $documentRoot, string $domain, array $aliases = [], bool $secure = true): void
     {
-        $this->files->ensureDirExists(config('env.apache.vhosts'));
+        File::ensureDirExists(config('env.apache.vhosts'));
         $this->deleteVHost($domain);
 
         $serverAliases = !empty($aliases)
@@ -92,21 +34,21 @@ class Apache
             : '';
 
         $virtualHostSsl = '';
-        if ($secure && $this->secure->canSecure($domain)) {
-            $virtualHostSsl = $this->stubs->get(
+        if ($secure && Secure::canSecure($domain)) {
+            $virtualHostSsl = Stub::get(
                 'httpd-vhost-ssl.conf',
                 [
                     'DOMAIN' => $domain,
                     'SERVER_ALIAS' => $serverAliases,
                     'DOCUMENT_ROOT' => $documentRoot,
                     'LOGS_PATH' => config('env.logs_path'),
-                    'CERTIFICATE_CRT' => $this->secure->getFilePath($domain, 'crt'),
-                    'CERTIFICATE_KEY' => $this->secure->getFilePath($domain, 'key')
+                    'CERTIFICATE_CRT' => Secure::getFilePath($domain, 'crt'),
+                    'CERTIFICATE_KEY' => Secure::getFilePath($domain, 'key')
                 ]
             );
         }
 
-        $vhostConfig = $this->stubs->get(
+        $vhostConfig = Stub::get(
             'httpd-vhost.conf',
             [
                 'DOMAIN' => $domain,
@@ -116,7 +58,18 @@ class Apache
                 'VIRTUAL_HOST_SSL' => $virtualHostSsl,
             ]
         );
-        $this->files->put($this->getConfPath($domain), $vhostConfig);
+        File::put($this->getConfPath($domain), $vhostConfig);
+    }
+
+    /**
+     * @return void
+     */
+    public function unlinkPhp(): void
+    {
+        $config = File::get(config('env.apache.config'));
+        foreach (config('env.php.versions') as $phpVersion) {
+            $config = $this->removePhpVersion($config, $phpVersion);
+        }
     }
 
     /**
@@ -125,11 +78,9 @@ class Apache
      */
     public function linkPhp(string $version): void
     {
-        $config = $this->files->get(config('env.apache.config'));
-        foreach (config('env.php.versions') as $phpVersion) {
-            $config = $this->removePhpVersion($config, $phpVersion);
-        }
+        $this->unlinkPhp();
 
+        $config = File::get(config('env.apache.config'));
         $phpModuleHeader = config('env.apache.php_module_header') . PHP_EOL;
         if (strpos($config, $phpModuleHeader) === false) {
             throw new \RuntimeException('Apache config is broken');
@@ -137,7 +88,7 @@ class Apache
 
         $phpModuleLoad = $this->getPhpModuleLoad($version);
         $config = str_replace($phpModuleHeader, $phpModuleHeader . $phpModuleLoad . PHP_EOL, $config);
-        $this->files->put(config('env.apache.config'), $config);
+        File::put(config('env.apache.config'), $config);
     }
 
     /**
@@ -187,10 +138,10 @@ class Apache
      */
     public function configure(): void
     {
-        $this->files->ensureDirExists(config('env.apache.vhosts'));
-        $this->files->ensureDirExists(config('env.logs_path'));
+        File::ensureDirExists(config('env.apache.vhosts'));
+        File::ensureDirExists(config('env.logs_path'));
 
-        $apacheConfig = $this->stubs->get(
+        $apacheConfig = Stub::get(
             'httpd.conf',
             [
                 'CURRENT_USER' => $_SERVER['USER'],
@@ -199,7 +150,7 @@ class Apache
                 'LOGS_PATH' => config('env.logs_path'),
             ]
         );
-        $this->files->put(config('env.apache.config'), $apacheConfig);
+        File::put(config('env.apache.config'), $apacheConfig);
         $this->includeToHttpdConfig();
     }
 
@@ -209,8 +160,8 @@ class Apache
     private function includeToHttpdConfig(): void
     {
         $includeConfig = sprintf('Include %s', config('env.apache.config'));
-        if (strpos($this->files->get(config('env.apache.brew_config_path')), $includeConfig) === false) {
-            $this->files->append(config('env.apache.brew_config_path'), PHP_EOL . $includeConfig . PHP_EOL);
+        if (strpos(File::get(config('env.apache.brew_config_path')), $includeConfig) === false) {
+            File::append(config('env.apache.brew_config_path'), PHP_EOL . $includeConfig . PHP_EOL);
         }
     }
 
@@ -220,8 +171,8 @@ class Apache
     public function initDefaultLocalhostVHost()
     {
         $valetDir = config('env.apache.localhost_path');
-        $this->files->ensureDirExists($valetDir);
-        $this->files->put($valetDir . '/index.php', '<?php' . PHP_EOL . "\t" . 'phpinfo();' . PHP_EOL);
+        File::ensureDirExists($valetDir);
+        File::put($valetDir . '/index.php', '<?php' . PHP_EOL . "\t" . 'phpinfo();' . PHP_EOL);
 
         $this->configureVHost($valetDir, 'localhost', [], false);
     }

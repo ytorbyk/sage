@@ -2,7 +2,8 @@
 
 namespace App\Commands\Apache;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\BrewService;
 
 class StartCommand extends Command
 {
@@ -19,27 +20,12 @@ class StartCommand extends Command
     protected $description = 'Start Apache service';
 
     /**
-     * @var \App\Components\Site\Apache
-     */
-    private $apache;
-
-    /**
-     * @param \App\Components\Site\Apache $apache
-     */
-    public function __construct(
-        \App\Components\Site\Apache $apache
-    ) {
-        $this->apache = $apache;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        $this->job('Apache Start', function () {
-            $this->apache->start();
+        $this->task('Apache Start', function () {
+            BrewService::start(config('env.apache.formula'), true);
         });
     }
 }

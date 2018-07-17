@@ -2,7 +2,11 @@
 
 namespace App\Commands\MySql;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\File;
+use App\Facades\Stub;
+use App\Facades\Cli;
 
 class InstallCommand extends Command
 {
@@ -19,65 +23,19 @@ class InstallCommand extends Command
     protected $description = 'Install and configure MySQL';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     * @param \App\Components\CommandLine $cli
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs,
-        \App\Components\CommandLine $cli
-    ) {
-        $this->brew = $brew;
-        $this->files = $files;
-        $this->stubs = $stubs;
-        $this->cli = $cli;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $this->info('Install MySQL:');
 
-        $needInstall = $this->job('Need to be installed?', function () {
-            return !$this->brew->isInstalled(config('env.mysql.formula')) ?: 'Installed. Skip';
-        });
-        if ($needInstall === true) {
-            $this->job(sprintf('Install [%s] Brew formula', config('env.mysql.formula')), function () {
-                $this->brew->install(config('env.mysql.formula'));
-            });
-        }
+        $needInstall = $this->installFormula(config('env.mysql.formula'));
 
-        $this->job(sprintf('Link [%s] formula', config('env.mysql.formula')), function () {
-            $this->brew->link(config('env.mysql.formula'));
+        $this->task(sprintf('Link [%s] formula', config('env.mysql.formula')), function () {
+            Brew::link(config('env.mysql.formula'));
         });
 
-        $this->job('Configure MySQL', function () {
+        $this->task('Configure MySQL', function () {
             $this->configureMySQL();
         });
 
@@ -94,15 +52,15 @@ class InstallCommand extends Command
      */
     private function configureMySQL(): void
     {
-        $this->files->chmod(config('env.mysql.data_dir_path'), 0777);
-        $mysqlConfig = $this->stubs->get(
-            '/my.cnf',
+        File::chmod(config('env.mysql.data_dir_path'), 0777);
+        $mysqlConfig = Stub::get(
+            'my.cnf',
             [
                 'MYSQL_PASSWORD' => config('env.mysql.password'),
                 'LOGS_PATH' => config('env.logs_path')
             ]
         );
-        $this->files->put(config('env.mysql.brew_config_path'), $mysqlConfig);
+        File::put(config('env.mysql.brew_config_path'), $mysqlConfig);
     }
 
     /**
@@ -111,18 +69,18 @@ class InstallCommand extends Command
     private function updateSecureSettings(): void
     {
         $mysqlPasswordMessage = 'Enter previously installed MySQL root password. If was not installed any, just press enter (empty password)!';
-        $this->output->writeln('<fg=red>' . $mysqlPasswordMessage . '</>');
-        $this->job(sprintf('Update MySQL Password to "%s"', config('env.mysql.password')), function () {
-            $this->cli->run(sprintf('mysql -u root -p -e "UPDATE mysql.user SET authentication_string=PASSWORD(\'%s\') WHERE User=\'root\'"', config('env.mysql.password')));
+        $this->error($mysqlPasswordMessage);
+        $this->task(sprintf('Update MySQL Password to "%s"', config('env.mysql.password')), function () {
+            Cli::passthru(sprintf('mysql -u root -p -e "UPDATE mysql.user SET authentication_string=PASSWORD(\'%s\') WHERE User=\'root\'"', config('env.mysql.password')));
         });
 
-        $this->output->writeln('<fg=red>' . $mysqlPasswordMessage . '</>');
-        $this->job('Flush MySQL privileges', function () {
-            $this->cli->run('mysql -u root -p -e "FLUSH PRIVILEGES;"');
+        $this->error($mysqlPasswordMessage);
+        $this->task('Flush MySQL privileges', function () {
+            Cli::passthru('mysql -u root -p -e "FLUSH PRIVILEGES;"');
         });
 
-        $this->job('Delete anonymous users', function () {
-            $this->cli->run('mysql -e "DELETE FROM mysql.user WHERE User=\'\';"');
+        $this->task('Delete anonymous users', function () {
+            Cli::passthru('mysql -e "DELETE FROM mysql.user WHERE User=\'\';"');
         });
     }
 }

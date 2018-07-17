@@ -2,7 +2,11 @@
 
 namespace App\Commands\Apache;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\BrewService;
+use App\Facades\Cli;
+use App\Facades\ApacheHelper;
 
 class InstallCommand extends Command
 {
@@ -19,65 +23,29 @@ class InstallCommand extends Command
     protected $description = 'Install and configure Apache';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Site\Apache
-     */
-    private $apache;
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Site\Apache $apache
-     * @param \App\Components\CommandLine $cli
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Site\Apache $apache,
-        \App\Components\CommandLine $cli
-    ) {
-        $this->brew = $brew;
-        $this->apache = $apache;
-        $this->cli = $cli;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $this->info('Install Apache:');
 
-        $this->job('Ensure Apache is not running', function () {
-            $this->cli->runQuietly('sudo apachectl stop');
-            $this->cli->runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
-            $this->cli->runQuietly(sprintf('sudo brew services stop ', config('env.apache.formula')));
+        $this->task('Ensure Apache is not running', function () {
+            Cli::runQuietly('sudo apachectl stop');
+            Cli::runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
+
+            if (Brew::isInstalled(config('env.apache.formula'))) {
+                BrewService::stop(config('env.apache.formula'));
+            }
         });
 
-        $needInstall = $this->job('Need to be installed?', function () {
-            return !$this->brew->isInstalled(config('env.apache.formula')) ?: 'Installed. Skip';
+        $this->installFormula(config('env.apache.formula'));
+
+        $this->task('Configure Apache', function () {
+            ApacheHelper::configure();
         });
 
-        if ($needInstall === true) {
-            $this->job(sprintf('Install [%s] Brew formula', config('env.apache.formula')), function () {
-                $this->brew->install(config('env.apache.formula'));
-            });
-        }
-
-        $this->job('Configure Apache', function () {
-            $this->apache->configure();
-        });
-
-        $this->job('Create default Virtual Host (localhost)', function () {
-            $this->apache->initDefaultLocalhostVHost();
+        $this->task('Create default Virtual Host (localhost)', function ()  {
+            ApacheHelper::initDefaultLocalhostVHost();
         });
 
         $this->call(StartCommand::COMMAND);

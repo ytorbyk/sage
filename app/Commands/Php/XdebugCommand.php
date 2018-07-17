@@ -2,9 +2,11 @@
 
 namespace App\Commands\Php;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Apache\RestartCommand;
-use App\Components\Site\Pecl;
+use App\Services\Pecl;
+use App\Facades\PeclHelper;
+use App\Facades\File;
 
 class XdebugCommand extends Command
 {
@@ -24,32 +26,9 @@ class XdebugCommand extends Command
     protected $description = 'Toggle xDebug PHP extension';
 
     /**
-     * @var \App\Components\Site\Pecl
-     */
-    private $pecl;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
      * @var array
      */
     private $allowedActions = ['on', 'off'];
-
-    /**
-     * @param \App\Components\Site\Pecl $pecl
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Site\Pecl $pecl,
-        \App\Components\Files $files
-    ) {
-        $this->pecl = $pecl;
-        $this->files = $files;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -60,7 +39,7 @@ class XdebugCommand extends Command
 
         if (!$action) {
             $action = $this->getAction();
-        } elseif (!in_array($action, $this->allowedActions)) {
+        } elseif (!in_array($action, $this->allowedActions, true)) {
             $this->warn('Wrong action. Allowed actions: ' . implode('|', $this->allowedActions));
             return;
         }
@@ -86,22 +65,22 @@ class XdebugCommand extends Command
      */
     private function enable(bool $remoteAutostart = false): bool
     {
-        if (!$this->pecl->isInstalled(Pecl::XDEBUG_EXTENSION)) {
+        if (!PeclHelper::isInstalled(Pecl::XDEBUG_EXTENSION)) {
             $this->warn('xDebug is not installed');
             return false;
         }
 
-        if ($this->pecl->isEnabled(Pecl::XDEBUG_EXTENSION)) {
+        if (PeclHelper::isEnabled(Pecl::XDEBUG_EXTENSION)) {
             $this->warn('xDebug is already enabled');
             return false;
         }
 
-        $this->job('xDebug enable', function () {
-            $this->pecl->enable(Pecl::XDEBUG_EXTENSION);
+        $this->task('xDebug enable', function () {
+            PeclHelper::enable(Pecl::XDEBUG_EXTENSION);
         });
 
         if ($remoteAutostart) {
-            $this->job('xDebug enable autostart', function () {
+            $this->task('xDebug enable autostart', function () {
                 $this->enableAutostart();
             });
         }
@@ -113,9 +92,9 @@ class XdebugCommand extends Command
      */
     private function enableAutostart(): void
     {
-        $configContent = $this->files->get($this->pecl->iniPath(Pecl::XDEBUG_EXTENSION));
+        $configContent = File::get(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION));
         $configContent = str_replace('xdebug.remote_autostart=0', 'xdebug.remote_autostart=1', $configContent);
-        $this->files->put($this->pecl->iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
+        File::put(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
     }
 
     /**
@@ -123,14 +102,14 @@ class XdebugCommand extends Command
      */
     private function disable(): bool
     {
-        if (!$this->pecl->isEnabled(Pecl::XDEBUG_EXTENSION)) {
+        if (!PeclHelper::isEnabled(Pecl::XDEBUG_EXTENSION)) {
             $this->warn('xDebug is already disabled');
             return false;
         }
 
-        $this->job('xDebug disable', function () {
+        $this->task('xDebug disable', function () {
             $this->disableAutostart();
-            $this->pecl->disable(Pecl::XDEBUG_EXTENSION);
+            PeclHelper::disable(Pecl::XDEBUG_EXTENSION);
         });
         return true;
     }
@@ -140,9 +119,9 @@ class XdebugCommand extends Command
      */
     private function disableAutostart(): void
     {
-        $configContent = $this->files->get($this->pecl->iniPath(Pecl::XDEBUG_EXTENSION));
+        $configContent = File::get(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION));
         $configContent = str_replace('xdebug.remote_autostart=1', 'xdebug.remote_autostart=0', $configContent);
-        $this->files->put($this->pecl->iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
+        File::put(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
     }
 
     /**
@@ -150,7 +129,7 @@ class XdebugCommand extends Command
      */
     private function getAction(): ?string
     {
-        if ($this->pecl->isEnabled(Pecl::XDEBUG_EXTENSION)) {
+        if (PeclHelper::isEnabled(Pecl::XDEBUG_EXTENSION)) {
             $action = 'off';
             $confirm = 'xDebug is enabled, do you want to disable?';
         } else {

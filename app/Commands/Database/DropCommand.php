@@ -2,7 +2,8 @@
 
 namespace App\Commands\Database;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Cli;
 
 class DropCommand extends Command
 {
@@ -19,29 +20,14 @@ class DropCommand extends Command
     protected $description = 'Drop Database';
 
     /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @param \App\Components\CommandLine $cli
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli
-    ) {
-        $this->cli = $cli;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $name = $this->argument('name');
 
-        $this->job(sprintf('Drop DB %s if exists', $name), function () use ($name) {
-            $this->cli->run(sprintf("mysql -e 'DROP DATABASE IF EXISTS `%s`'", $name));
+        $this->task(sprintf('Drop DB %s if exists', $name), function () use ($name) {
+            Cli::run(sprintf("mysql -e 'DROP DATABASE IF EXISTS `%s`'", $name));
         });
     }
 }

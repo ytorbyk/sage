@@ -2,7 +2,8 @@
 
 namespace App\Commands\Database;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\File;
 
 class InstallCommand extends Command
 {
@@ -19,49 +20,28 @@ class InstallCommand extends Command
     protected $description = 'Install required software';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Files $files
-    ) {
-        $this->brew = $brew;
-        $this->files = $files;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $this->info('Install DB dump stuff:');
 
-        $progressFormula = config('env.progress.formula');
+        $this->installFormula(config('env.progress.formula'));
 
-        $isInstalled = $this->job(sprintf('Check if [%s] is already installed', $progressFormula), function () use ($progressFormula) {
-            return $this->brew->isInstalled($progressFormula);
+        $this->task('Ensure DB dumps directory created', function () {
+            File::ensureDirExists(config('env.db.dump_path'));
         });
 
-        if (!$isInstalled) {
-            $this->job(sprintf('Install [%s] Brew formula', $progressFormula), function () use ($progressFormula) {
-                $this->brew->install($progressFormula);
-            });
-        }
+        $this->task('Setup Locale setting for Bash', function () {
 
-        $this->job('Ensure DB dumps directory created', function () {
-            $this->files->ensureDirExists(config('env.db.dump_path'));
+            $bashrcPath = config('env.completion.bashrc_path');
+            $bashProfilePath = config('env.completion.bash_profile_path');
+
+            if ((!File::exists($bashrcPath) || strpos(File::get($bashrcPath), 'LC_ALL') === false)
+                && (!File::exists($bashProfilePath) || strpos(File::get($bashProfilePath), 'LC_ALL') === false)
+            ) {
+                File::append($bashProfilePath, PHP_EOL . 'export LC_ALL=C' . PHP_EOL);
+            }
         });
     }
 }

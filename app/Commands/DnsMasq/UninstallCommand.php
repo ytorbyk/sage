@@ -2,7 +2,10 @@
 
 namespace App\Commands\DnsMasq;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\File;
+use App\Facades\Cli;
 
 class UninstallCommand extends Command
 {
@@ -19,49 +22,29 @@ class UninstallCommand extends Command
     protected $description = 'Uninstall DnsMasq';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\DnsMasq
-     */
-    private $dnsMasq;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\DnsMasq $dnsMasq
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\DnsMasq $dnsMasq
-    ) {
-        $this->brew = $brew;
-        $this->dnsMasq = $dnsMasq;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $this->info('Uninstall DnsMasq:');
 
-        $needUninstall = $this->job('Need to be uninstalled?', function () {
-            return $this->brew->isInstalled(config('env.dns.formula')) ?: 'Uninstalled. Skip';
-        });
-        if ($needUninstall === true) {
-
+        if (Brew::isInstalled(config('env.dns.formula'))) {
             $this->call(StopCommand::COMMAND);
-
-            $this->job(sprintf('Uninstall [%s] Brew formula', config('env.dns.formula')), function () {
-                $this->brew->uninstall(config('env.dns.formula'));
-            });
+            $this->uninstallFormula(config('env.dns.formula'));
         }
 
-        $this->job('Delete DnsMasq config', function () {
-            $this->dnsMasq->deleteConfig();
+        $this->task('Delete DnsMasq config', function () {
+            $this->deleteConfig();
         });
+    }
+
+    /**
+     * @return void
+     */
+    private function deleteConfig()
+    {
+        Cli::run(sprintf('sudo rm -rf %s', config('env.dns.resolver_path')));
+        File::delete(config('env.dns.brew_config_path'));
+        File::deleteDirectory(config('env.dns.brew_config_dir_path'));
     }
 }

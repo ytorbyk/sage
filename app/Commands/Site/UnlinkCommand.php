@@ -2,7 +2,7 @@
 
 namespace App\Commands\Site;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Apache\HostRevokeCommand;
 use App\Commands\Apache\RestartCommand;
 
@@ -13,7 +13,8 @@ class UnlinkCommand extends Command
     /**
      * @var string
      */
-    protected $signature = self::COMMAND . ' {domain}';
+    protected $signature = self::COMMAND
+        . ' {domain}';
 
     /**
      * @var string

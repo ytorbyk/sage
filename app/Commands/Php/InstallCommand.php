@@ -2,8 +2,15 @@
 
 namespace App\Commands\Php;
 
-use LaravelZero\Framework\Commands\Command;
-use App\Components\Site\Pecl;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\BrewService;
+use App\Facades\PhpHelper;
+use App\Facades\PeclHelper;
+use App\Facades\IonCubeHelper;
+use App\Facades\Stub;
+use App\Facades\File;
+use App\Services\Pecl;
 
 class InstallCommand extends Command
 {
@@ -20,76 +27,13 @@ class InstallCommand extends Command
     protected $description = 'Install and configure PHP';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Brew\Service
-     */
-    private $brewService;
-
-    /**
-     * @var \App\Components\Site\Php
-     */
-    private $php;
-
-    /**
-     * @var \App\Components\Site\Pecl
-     */
-    private $pecl;
-
-    /**
-     * @var \App\Components\Site\IonCube
-     */
-    private $ionCube;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Brew\Service $brewService
-     * @param \App\Components\Site\Php $php
-     * @param \App\Components\Site\Pecl $pecl
-     * @param \App\Components\Site\IonCube $ionCube
-     * @param \App\Components\Stubs $stubs
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Brew\Service $brewService,
-        \App\Components\Site\Php $php,
-        \App\Components\Site\Pecl $pecl,
-        \App\Components\Site\IonCube $ionCube,
-        \App\Components\Stubs $stubs,
-        \App\Components\Files $files
-    ) {
-        $this->brew = $brew;
-        $this->brewService = $brewService;
-        $this->php = $php;
-        $this->pecl = $pecl;
-        $this->ionCube = $ionCube;
-        $this->stubs = $stubs;
-        $this->files = $files;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
         $phpVersions = config('env.php.versions');
 
-        $this->brew->ensureInstalled('autoconf');
+        Brew::ensureInstalled('autoconf');
         $this->setupSmtpCatcher();
 
         foreach ($phpVersions as $phpVersion) {
@@ -97,7 +41,7 @@ class InstallCommand extends Command
             $this->installVersion($phpVersion);
         }
 
-        $this->files->deleteDirectory(config('env.tmp_path'));
+        File::deleteDirectory(config('env.tmp_path'));
     }
 
     /**
@@ -106,35 +50,28 @@ class InstallCommand extends Command
      */
     private function installVersion(string $phpVersion): void
     {
-        $this->job('Ensure no PHP is linked', function () {
-            $currentVersion = $this->php->getLinkedPhp();
+        $this->task('Ensure no PHP is linked', function () {
+            $currentVersion = PhpHelper::getLinkedPhp();
             if ($currentVersion !== null) {
-                $this->php->unlink($currentVersion);
+                PhpHelper::unlink($currentVersion);
             }
         });
 
-
-        $phpNeedInstall = $this->job(sprintf('PHP v%s need to be installed?', $phpVersion), function () use ($phpVersion) {
-            return !$this->brew->isInstalled($this->php->getFormula($phpVersion)) ?: 'Installed. Skip';
-        });
-        if ($phpNeedInstall === true) {
-            $this->job(sprintf('PHP v%s install', $phpVersion), function () use ($phpVersion) {
-                $this->brew->install($this->php->getFormula($phpVersion));
-                $this->brewService->stop($this->php->getFormula($phpVersion));
-            });
+        if ($this->installFormula(PhpHelper::getFormula($phpVersion))) {
+            BrewService::stop(PhpHelper::getFormula($phpVersion));
         }
 
-        $this->job(sprintf('PHP v%s link ', $phpVersion), function () use ($phpVersion) {
-            $this->php->link($phpVersion);
+        $this->task(sprintf('PHP v%s link', $phpVersion), function () use ($phpVersion) {
+            PhpHelper::link($phpVersion);
         });
 
-        $this->job(sprintf('PHP v%s update ini files', $phpVersion), function () use ($phpVersion) {
+        $this->task(sprintf('PHP v%s update ini files', $phpVersion), function () use ($phpVersion) {
             $this->tunePhpIni();
             $this->tuneOpCache();
         });
 
-        $this->job('PECL updating channel', function () {
-            $this->pecl->updatePeclChannel();
+        $this->task('PECL updating channel', function () {
+            PeclHelper::updatePeclChannel();
         });
         $this->installPeclExtension($phpVersion, Pecl::APCU_EXTENSION);
         $this->installPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
@@ -152,17 +89,17 @@ class InstallCommand extends Command
      */
     private function installPeclExtension(string $phpVersion, string $extension): void
     {
-        $apcuNeedInstall = $this->job(sprintf('[%s] need to be installed?', $extension), function () use ($phpVersion, $extension) {
-            return !$this->pecl->isInstalled($extension) ?: 'Installed. Skip';
+        $apcuNeedInstall = $this->task(sprintf('[%s] need to be installed?', $extension), function () use ($phpVersion, $extension) {
+            return !PeclHelper::isInstalled($extension) ?: 'Installed. Skip';
         });
         if ($apcuNeedInstall === true) {
-            $this->job(sprintf('[%s] install ', $extension), function () use ($phpVersion, $extension) {
-                $this->pecl->install($extension, $phpVersion);
+            $this->task(sprintf('[%s] install', $extension), function () use ($phpVersion, $extension) {
+                PeclHelper::install($extension, $phpVersion);
             });
         }
 
-        $this->job(sprintf('[%s] configure', $extension), function () use ($extension) {
-            $this->pecl->configure($extension);
+        $this->task(sprintf('[%s] configure', $extension), function () use ($extension) {
+            PeclHelper::configure($extension);
         });
     }
 
@@ -172,16 +109,16 @@ class InstallCommand extends Command
      */
     private function installIonCube(string $phpVersion): void
     {
-        $ioncubeNeedInstall = $this->job('[ioncube] need to be installed?', function () use ($phpVersion) {
-            return !$this->ionCube->isInstalled() ?: 'Installed. Skip';
+        $ioncubeNeedInstall = $this->task('[ioncube] need to be installed?', function () use ($phpVersion) {
+            return !IonCubeHelper::isInstalled() ?: 'Installed. Skip';
         });
         if ($ioncubeNeedInstall === true) {
-            $this->job('[ioncube] install', function () use ($phpVersion) {
-                $this->ionCube->install($phpVersion);
+            $this->task('[ioncube] install', function () use ($phpVersion) {
+                IonCubeHelper::install($phpVersion);
             });
         }
-        $this->job('[ioncube] configure', function () {
-            $this->ionCube->configure();
+        $this->task('[ioncube] configure', function () {
+            IonCubeHelper::configure();
         });
     }
 
@@ -190,16 +127,16 @@ class InstallCommand extends Command
      */
     private function tuneOpCache()
     {
-        if (!$this->files->exists($this->pecl->getConfdPath() . 'ext-opcache.ini.origin')) {
-            $this->files->move(
-                $this->pecl->getConfdPath() . 'ext-opcache.ini',
-                $this->pecl->getConfdPath() . 'ext-opcache.ini.origin'
+        if (!File::exists(PeclHelper::getConfdPath() . 'ext-opcache.ini.origin')) {
+            File::move(
+                PeclHelper::getConfdPath() . 'ext-opcache.ini',
+                PeclHelper::getConfdPath() . 'ext-opcache.ini.origin'
             );
         }
-        $originOpCacheConfig = $this->files->get($this->pecl->getConfdPath() . 'ext-opcache.ini.origin') . PHP_EOL;
-        $this->files->put(
-            $this->pecl->getConfdPath() . 'ext-opcache.ini',
-            $originOpCacheConfig . $this->stubs->get('php/ext-opcache.ini')
+        $originOpCacheConfig = File::get(PeclHelper::getConfdPath() . 'ext-opcache.ini.origin') . PHP_EOL;
+        File::put(
+            PeclHelper::getConfdPath() . 'ext-opcache.ini',
+            $originOpCacheConfig . Stub::get('php/ext-opcache.ini')
         );
     }
 
@@ -208,13 +145,13 @@ class InstallCommand extends Command
      */
     private function tunePhpIni()
     {
-        $this->files->ensureDirExists($this->pecl->getConfdPath());
+        File::ensureDirExists(PeclHelper::getConfdPath());
 
-        $phpZIni = $this->stubs->get('php/z-performance.ini', [
+        $phpZIni = Stub::get('php/z-performance.ini', [
             'TIMEZONE' => $this->getSystemTimeZone(),
             'SMTP_CATCHER_PATH' => config('env.php.smtp_catcher_path')
         ]);
-        $this->files->put($this->pecl->getConfdPath() . 'z-performance.ini', $phpZIni);
+        File::put(PeclHelper::getConfdPath() . 'z-performance.ini', $phpZIni);
     }
 
     /**
@@ -224,14 +161,14 @@ class InstallCommand extends Command
     {
         $mailDir = config('env.php.mail_path');
         $smtpCatcherPath = config('env.php.smtp_catcher_path');
-        $this->files->ensureDirExists($mailDir);
+        File::ensureDirExists($mailDir);
 
-        $smtpCatcher = $this->stubs->get('php/smtp_catcher.php', [
+        $smtpCatcher = Stub::get('php/smtp_catcher.php', [
             'TIMEZONE' => $this->getSystemTimeZone(),
             'MAIL_FOLDER' => $mailDir
         ]);
-        $this->files->put($smtpCatcherPath, $smtpCatcher);
-        $this->files->chmod($smtpCatcherPath, 0755);
+        File::put($smtpCatcherPath, $smtpCatcher);
+        File::chmod($smtpCatcherPath, 0755);
     }
 
     /**

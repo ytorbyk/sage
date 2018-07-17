@@ -1,47 +1,13 @@
 <?php
 
-namespace App\Components\Site;
+namespace App\Services;
+
+use App\Facades\Cli;
+use App\Facades\File;
+use App\Facades\Stub;
 
 class Secure
 {
-    /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\CommandLine $cli,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs
-    ) {
-        $this->brew = $brew;
-        $this->cli = $cli;
-        $this->files = $files;
-        $this->stubs = $stubs;
-    }
-
     /**
      * @param string $domain
      * @return bool
@@ -113,7 +79,7 @@ class Secure
 
         $this->delete($domain);
 
-        $this->files->ensureDirExists(config('env.secure.certificates_path'));
+        File::ensureDirExists(config('env.secure.certificates_path'));
 
         $this->buildCertificateConf($domain, $aliases);
         $this->createPrivateKey($domain);
@@ -132,7 +98,7 @@ class Secure
             return;
         }
 
-        $this->files->delete(
+        File::delete(
             [
                 $this->getFilePath($domain, 'crt'),
                 $this->getFilePath($domain, 'key'),
@@ -141,8 +107,8 @@ class Secure
             ]
         );
 
-        $this->cli->runQuietly(sprintf('sudo security delete-certificate -c "%s" -t', $domain));
-        $this->cli->runQuietly(sprintf('sudo security delete-certificate -c "%s"', $domain));
+        Cli::runQuietly(sprintf('sudo security delete-certificate -c "%s" -t', $domain));
+        Cli::runQuietly(sprintf('sudo security delete-certificate -c "%s"', $domain));
     }
 
     /**
@@ -161,8 +127,8 @@ class Secure
             $dnsNames .= 'DNS.' . $count .  ' = ' . $name . PHP_EOL;
         }
 
-        $config = $this->stubs->get('openssl.conf', ['DNS_NAMES' => $dnsNames]);
-        $this->files->put($this->getFilePath($domain, 'conf'), $config);
+        $config = Stub::get('openssl.conf', ['DNS_NAMES' => $dnsNames]);
+        File::put($this->getFilePath($domain, 'conf'), $config);
     }
 
     /**
@@ -172,7 +138,7 @@ class Secure
     private function createPrivateKey(string $domain): void
     {
         $command = sprintf('openssl genrsa -out %s 2048', $this->getFilePath($domain, 'key'));
-        $this->cli->run($command);
+        Cli::run($command);
     }
 
     /**
@@ -188,7 +154,7 @@ class Secure
             $domain,
             $this->getFilePath($domain, 'conf')
         );
-        $this->cli->run($command);
+        Cli::run($command);
     }
 
     /**
@@ -204,7 +170,7 @@ class Secure
             $this->getFilePath($domain, 'crt'),
             $this->getFilePath($domain, 'conf')
         );
-        $this->cli->run($command);
+        Cli::run($command);
     }
 
     /**
@@ -217,7 +183,7 @@ class Secure
             'sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain %s',
             $this->getFilePath($domain, 'crt')
         );
-        $this->cli->run($command);
+        Cli::run($command);
     }
 
     /**

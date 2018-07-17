@@ -2,7 +2,7 @@
 
 namespace App\Commands\Site;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Apache\HostCreateCommand;
 use App\Commands\Apache\RestartCommand;
 
@@ -13,9 +13,10 @@ class LinkCommand extends Command
     /**
      * @var string
      */
-    protected $signature = self::COMMAND . ' {domain} {aliases?*}
-        {--p|path= : Document root path}
-        {--not-secure : Do not create secure virtual host}';
+    protected $signature = self::COMMAND
+        . ' {domain} {aliases?*}'
+        . ' {--p|path= : Document root path}'
+        . ' {--not-secure : Do not create secure virtual host}';
 
     /**
      * @var string

@@ -1,6 +1,10 @@
 <?php
 
-namespace App\Components\Site;
+namespace App\Services;
+
+use App\Facades\File;
+use App\Facades\Stub;
+use App\Facades\Cli;
 
 class Pecl
 {
@@ -9,21 +13,6 @@ class Pecl
 
     const NORMAL_EXTENSION_TYPE = 'extension';
     const ZEND_EXTENSION_TYPE = 'zend_extension';
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
 
     /**
      * @var array
@@ -40,27 +29,12 @@ class Pecl
     ];
 
     /**
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs
-    ) {
-        $this->cli = $cli;
-        $this->files = $files;
-        $this->stubs = $stubs;
-    }
-
-    /**
      * @param string $extension
      * @return bool
      */
     public function isInstalled(string $extension): bool
     {
-        return strpos($this->cli->runQuietly('pecl list | grep ' . $extension), $extension) !== false;
+        return strpos(Cli::runQuietly('pecl list | grep ' . $extension), $extension) !== false;
     }
 
     /**
@@ -69,7 +43,7 @@ class Pecl
      */
     public function isEnabled(string $extension): bool
     {
-        $extensions = explode("\n", $this->cli->runQuietly("php -m | grep '$extension'"));
+        $extensions = explode("\n", Cli::runQuietly("php -m | grep '$extension'"));
         return in_array($extension, $extensions);
     }
 
@@ -79,10 +53,10 @@ class Pecl
      */
     public function enable(string $extension): void
     {
-        if (!$this->files->exists($this->iniPath($extension, true))) {
+        if (!File::exists($this->iniPath($extension, true))) {
             throw new \RuntimeException($extension . ' config file is not found.');
         }
-        $this->files->move($this->iniPath($extension, true), $this->iniPath($extension));
+        File::move($this->iniPath($extension, true), $this->iniPath($extension));
     }
 
     /**
@@ -91,10 +65,10 @@ class Pecl
      */
     public function disable(string $extension): void
     {
-        if (!$this->files->exists($this->iniPath($extension))) {
+        if (!File::exists($this->iniPath($extension))) {
             throw new \RuntimeException($extension . ' config file is not found.');
         }
-        $this->files->move($this->iniPath($extension), $this->iniPath($extension, true));
+        File::move($this->iniPath($extension), $this->iniPath($extension, true));
     }
 
     /**
@@ -120,7 +94,7 @@ class Pecl
      */
     public function getPhpIniPath(): string
     {
-        return str_replace("\n", '', $this->cli->run('pecl config-get php_ini'));
+        return str_replace("\n", '', Cli::run('pecl config-get php_ini'));
     }
 
     /**
@@ -128,15 +102,15 @@ class Pecl
      */
     public function getExtensionDirectory(): string
     {
-        return str_replace("\n", '', $this->cli->run('pecl config-get ext_dir'));
+        return str_replace("\n", '', Cli::run('pecl config-get ext_dir'));
     }
 
     /**
      * @return void
      */
-    public function updatePeclChannel()
+    public function updatePeclChannel(): void
     {
-        $this->cli->run('pecl channel-update pecl.php.net');
+        Cli::run('pecl channel-update pecl.php.net');
     }
 
     /**
@@ -149,7 +123,7 @@ class Pecl
         $extensionVersion = isset($this->extensions[$extension][$phpVersion]) ? $this->extensions[$extension][$phpVersion] : null;
         $extensionVersion = $extensionVersion === null ? $extension : $extension . '-' . $extensionVersion;
 
-        $result = $this->cli->run("pecl install $extensionVersion");
+        $result = Cli::run("pecl install $extensionVersion");
 
         if (!preg_match("/Installing '(.*{$extension}.so)'/", $result)) {
             throw new \DomainException("Could not find installation path for: $extension\n\n$result");
@@ -164,13 +138,13 @@ class Pecl
      * @param string $extension
      * @return void
      */
-    public function configure($extension)
+    public function configure($extension): void
     {
         $stubName = "php/ext-{$extension}.ini";
 
-        if ($this->stubs->isExist($stubName)) {
+        if (Stub::isExist($stubName)) {
             $this->removeIniDefinition($extension);
-            $this->files->put($this->iniPath($extension), $this->stubs->get($stubName));
+            File::put($this->iniPath($extension), Stub::get($stubName));
         }
     }
 
@@ -183,9 +157,9 @@ class Pecl
     private function removeIniDefinition($extension)
     {
         $phpIniPath = $this->getPhpIniPath();
-        $phpIniFile = $this->files->get($phpIniPath);
+        $phpIniFile = File::get($phpIniPath);
         $phpIniFile = preg_replace('/;?(zend_extension|extension)\=".*' . $extension . '.so"/', '', $phpIniFile);
-        $this->files->put($phpIniPath, $phpIniFile);
+        File::put($phpIniPath, $phpIniFile);
     }
 
     /**
@@ -198,7 +172,7 @@ class Pecl
         $extensionVersion = isset($this->extensions[$extension][$phpVersion]) ? $this->extensions[$extension][$phpVersion] : null;
         $extensionVersion = $extensionVersion === null ? $extension : $extension . '-' . $extensionVersion;
 
-        $this->cli->run("pecl uninstall $extensionVersion");
+        Cli::run("pecl uninstall $extensionVersion");
     }
 
     /**
@@ -208,6 +182,6 @@ class Pecl
     public function deleteConfigs(string $phpVersion): void
     {
         $pearDirSuffix = config('env.php.main_version') === $phpVersion ? '' : '@' . $phpVersion;
-        $this->files->deleteDirectory(config('env.php.brew_pear_path') . $pearDirSuffix);
+        File::deleteDirectory(config('env.php.brew_pear_path') . $pearDirSuffix);
     }
 }

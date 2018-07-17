@@ -2,8 +2,11 @@
 
 namespace App\Commands\Apache;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Secure\GenerateCommand;
+use App\Facades\File;
+use App\Facades\Secure;
+use App\Facades\ApacheHelper;
 
 class HostCreateCommand extends Command
 {
@@ -12,45 +15,15 @@ class HostCreateCommand extends Command
     /**
      * @var string
      */
-    protected $signature = self::COMMAND . ' {domain} {aliases?*}
-        {--p|path= : Document root path}
-        {--not-secure : Do not create secure virtual host}';
+    protected $signature = self::COMMAND
+        . ' {domain} {aliases?*}'
+        . ' {--p|path= : Document root path}'
+        . ' {--not-secure : Do not create secure virtual host}';
 
     /**
      * @var string
      */
     protected $description = 'Create Apache Virtual Host';
-
-    /**
-     * @var \App\Components\Site\Apache
-     */
-    private $apache;
-
-    /**
-     * @var \App\Components\Site\Secure
-     */
-    private $siteSecure;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\Site\Apache $apache
-     * @param \App\Components\Site\Secure $siteSecure
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Site\Apache $apache,
-        \App\Components\Site\Secure $siteSecure,
-        \App\Components\Files $files
-    ) {
-        $this->apache = $apache;
-        $this->siteSecure = $siteSecure;
-        $this->files = $files;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -68,12 +41,12 @@ class HostCreateCommand extends Command
             return;
         }
 
-        if ($this->siteSecure->canSecure($domain) && $secure) {
+        if (Secure::canSecure($domain) && $secure) {
             $this->call(GenerateCommand::COMMAND, ['domain' => $domain, 'aliases' => $aliases]);
         }
 
-        $this->job('Create Apache Virtual Host', function () use ($hostPath, $secure) {
-            $this->apache->configureVHost(
+        $this->task('Create Apache Virtual Host', function () use ($hostPath, $secure) {
+            ApacheHelper::configureVHost(
                 $hostPath,
                 $this->argument('domain'),
                 $this->argument('aliases'),
@@ -105,6 +78,6 @@ class HostCreateCommand extends Command
      */
     private function verifyPath(string $path): bool
     {
-        return $this->files->exists($path) && $this->files->isDirectory($path);
+        return File::exists($path) && File::isDirectory($path);
     }
 }

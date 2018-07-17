@@ -53,9 +53,16 @@ return [
     'hidden' => [
         NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,
         Symfony\Component\Console\Command\HelpCommand::class,
-        Illuminate\Console\Scheduling\ScheduleRunCommand::class,
-        Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
-        Illuminate\Foundation\Console\VendorPublishCommand::class,
+        App\Commands\Apache\InstallCommand::class,
+        App\Commands\Apache\UninstallCommand::class,
+        App\Commands\Database\InstallCommand::class,
+        App\Commands\DnsMasq\InstallCommand::class,
+        App\Commands\DnsMasq\UninstallCommand::class,
+        App\Commands\MySql\InstallCommand::class,
+        App\Commands\MySql\UninstallCommand::class,
+        App\Commands\Php\InstallCommand::class,
+        App\Commands\Php\UninstallCommand::class,
+        App\Commands\Secure\InstallCommand::class,
     ],
 
     /*
@@ -69,7 +76,9 @@ return [
     |
     */
     'remove' => [
-        // ..
+        Illuminate\Console\Scheduling\ScheduleRunCommand::class,
+        Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
+        Illuminate\Foundation\Console\VendorPublishCommand::class,
     ],
 
 ];

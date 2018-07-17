@@ -2,8 +2,11 @@
 
 namespace App\Commands\Php;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Apache\RestartCommand;
+use App\Facades\Brew;
+use App\Facades\ApacheHelper;
+use App\Facades\PhpHelper;
 
 class SwitchCommand extends Command
 {
@@ -22,37 +25,6 @@ class SwitchCommand extends Command
     protected $description = 'Switch php version';
 
     /**
-     * @var \App\Components\Site\Php
-     */
-    private $php;
-
-    /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Site\Apache
-     */
-    private $apache;
-
-    /**
-     * @param \App\Components\Site\Php $php
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Site\Apache $apache
-     */
-    public function __construct(
-        \App\Components\Site\Php $php,
-        \App\Components\Brew $brew,
-        \App\Components\Site\Apache $apache
-    ) {
-        $this->php = $php;
-        $this->brew = $brew;
-        $this->apache = $apache;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
@@ -63,12 +35,12 @@ class SwitchCommand extends Command
             return;
         }
 
-        if (!$this->brew->isInstalled($this->php->getFormula($phpVersion))) {
+        if (!Brew::isInstalled(PhpHelper::getFormula($phpVersion))) {
             $this->warn("PHP {$phpVersion} is not installed.");
             return;
         }
 
-        $currentVersion = $this->php->getLinkedPhp();
+        $currentVersion = PhpHelper::getLinkedPhp();
         $supportedVersions = config('env.php.versions');
 
         if (!in_array($phpVersion, $supportedVersions, true)) {
@@ -82,12 +54,12 @@ class SwitchCommand extends Command
 
         $this->info('Enable PHP v' . $phpVersion . ':');
 
-        $this->job('Relink php', function () use ($phpVersion) {
-            $this->php->switchTo($phpVersion);
+        $this->task('Relink php', function () use ($phpVersion) {
+            PhpHelper::switchTo($phpVersion);
         });
 
-        $this->job('Update apache config', function () use ($phpVersion) {
-            $this->apache->linkPhp($phpVersion);
+        $this->task('Update apache config', function () use ($phpVersion) {
+            ApacheHelper::linkPhp($phpVersion);
         });
 
         if (!$this->option('skip')) {

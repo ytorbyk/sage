@@ -2,7 +2,8 @@
 
 namespace App\Commands\DnsMasq;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\BrewService;
 
 class StartCommand extends Command
 {
@@ -19,27 +20,12 @@ class StartCommand extends Command
     protected $description = 'Start DnsMasq service';
 
     /**
-     * @var \App\Components\Brew\Service
-     */
-    private $brewService;
-
-    /**
-     * @param \App\Components\Brew\Service $brewService
-     */
-    public function __construct(
-        \App\Components\Brew\Service $brewService
-    ) {
-        $this->brewService = $brewService;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        $this->job('DnsMasq Start', function () {
-            $this->brewService->start(config('env.dns.formula'), true);
+        $this->task('DnsMasq Start', function () {
+            BrewService::start(config('env.dns.formula'), true);
         });
     }
 }

@@ -1,33 +1,14 @@
 <?php
 
-namespace App\Components\Brew;
+namespace App\Services;
 
-class Service
+use App\Facades\Cli;
+use App\Facades\Brew;
+
+class BrewService
 {
-    private const SERVICE_STARTED = 'started';
-    private const SERVICE_ROOT = 'root';
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Brew $brew
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli,
-        \App\Components\Brew $brew
-    ) {
-        $this->cli = $cli;
-        $this->brew = $brew;
-    }
+    protected const SERVICE_STARTED = 'started';
+    protected const SERVICE_ROOT = 'root';
 
     /**
      * @param string $service
@@ -48,7 +29,7 @@ class Service
      */
     private function getServiceData(string $service): array
     {
-        if (!$this->brew->isInstalled($service)) {
+        if (!Brew::isInstalled($service)) {
             throw new \DomainException("[{$service}] formula is not installed");
         }
 
@@ -69,7 +50,7 @@ class Service
     {
         $services = [];
 
-        $serviceLines = explode(PHP_EOL, $this->cli->run('brew services list'));
+        $serviceLines = explode(PHP_EOL, Cli::run('brew services list'));
         array_shift($serviceLines);
         foreach ($serviceLines as $serviceLine) {
             $serviceLine = array_values(array_filter(explode(' ', $serviceLine)));
@@ -110,7 +91,7 @@ class Service
         }
 
         $commandPrefix = $root ? 'sudo ' : '';
-        $this->cli->run($commandPrefix . 'brew services start ' . $service);
+        Cli::run($commandPrefix . 'brew services start ' . $service);
         return true;
     }
 
@@ -126,7 +107,7 @@ class Service
 
         if ($serviceData[self::SERVICE_STARTED] === true) {
             $commandPrefix = $serviceData[self::SERVICE_ROOT] ? 'sudo ' : '';
-            $this->cli->run($commandPrefix . 'brew services stop ' . $service);
+            Cli::run($commandPrefix . 'brew services stop ' . $service);
         }
     }
 

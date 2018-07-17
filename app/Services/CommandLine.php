@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Components;
+namespace App\Services;
 
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -51,7 +51,7 @@ class CommandLine
      * @param  string  $command
      * @return void
      */
-    public function passthru($command)
+    public function passthru(string $command): void
     {
         passthru($command);
     }

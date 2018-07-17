@@ -2,8 +2,9 @@
 
 namespace App\Commands\Php;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\Apache\RestartCommand;
+use App\Facades\IonCubeHelper;
 
 class IoncubeCommand extends Command
 {
@@ -22,24 +23,9 @@ class IoncubeCommand extends Command
     protected $description = 'Toggle IonCube PHP extension';
 
     /**
-     * @var \App\Components\Site\IonCube
-     */
-    private $ionCube;
-
-    /**
      * @var array
      */
     private $allowedActions = ['on', 'off'];
-
-    /**
-     * @param \App\Components\Site\IonCube $ionCube
-     */
-    public function __construct(
-        \App\Components\Site\IonCube $ionCube
-    ) {
-        $this->ionCube = $ionCube;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -50,7 +36,7 @@ class IoncubeCommand extends Command
 
         if (!$action) {
             $action = $this->getAction();
-        } elseif (!in_array($action, $this->allowedActions)) {
+        } elseif (!in_array($action, $this->allowedActions, true)) {
             $this->warn('Wrong action. Allowed actions: ' . implode('|', $this->allowedActions));
             return;
         }
@@ -76,18 +62,18 @@ class IoncubeCommand extends Command
      */
     private function enable(): bool
     {
-        if (!$this->ionCube->isInstalled()) {
+        if (!IonCubeHelper::isInstalled()) {
             $this->warn('IonCube is not installed');
             return false;
         }
 
-        if ($this->ionCube->isEnabled()) {
+        if (IonCubeHelper::isEnabled()) {
             $this->warn('IonCube is already enabled');
             return false;
         }
 
-        $this->job('IonCube enable', function () {
-            $this->ionCube->enable();
+        $this->task('IonCube enable', function () {
+            IonCubeHelper::enable();
         });
         return true;
     }
@@ -97,13 +83,13 @@ class IoncubeCommand extends Command
      */
     private function disable(): bool
     {
-        if (!$this->ionCube->isEnabled()) {
+        if (!IonCubeHelper::isEnabled()) {
             $this->warn('IonCube is already disabled');
             return false;
         }
 
-        $this->job('IonCube disable', function () {
-            $this->ionCube->disable();
+        $this->task('IonCube disable', function () {
+            IonCubeHelper::disable();
         });
         return true;
     }
@@ -113,7 +99,7 @@ class IoncubeCommand extends Command
      */
     private function getAction(): ?string
     {
-        if ($this->ionCube->isEnabled()) {
+        if (IonCubeHelper::isEnabled()) {
             $action = 'off';
             $confirm = 'IonCube is enabled, do you want to disable?';
         } else {

@@ -1,31 +1,18 @@
 <?php
 
-namespace App\Components;
+namespace App\Services;
 
 use Symfony\Component\Process\Exception\ProcessFailedException;
+use App\Facades\Cli;
 
 class Brew
 {
     /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @param \App\Components\CommandLine $cli
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli
-    ) {
-        $this->cli = $cli;
-    }
-
-    /**
      * @return bool
      */
-    public function isBrewAvailable()
+    public function isBrewAvailable(): bool
     {
-        return strpos($this->cli->runQuietly('brew -v | grep Homebrew'), 'Homebrew') !== false;
+        return strpos(Cli::runQuietly('brew -v | grep Homebrew'), 'Homebrew') !== false;
     }
 
     /**
@@ -34,7 +21,7 @@ class Brew
      */
     public function link(string $formula): string
     {
-        return $this->cli->run('brew link ' . $formula . ' --force --overwrite');
+        return Cli::run('brew link ' . $formula . ' --force --overwrite');
     }
 
     /**
@@ -43,7 +30,7 @@ class Brew
      */
     public function unlink(string $formula): string
     {
-        return $this->cli->run('brew unlink ' . $formula . ' --force');
+        return Cli::run('brew unlink ' . $formula . ' --force');
     }
 
     /**
@@ -52,7 +39,7 @@ class Brew
      */
     public function isInstalled(string $formula): bool
     {
-        return in_array($formula, explode(PHP_EOL, $this->cli->runQuietly('brew list | grep ' . $formula)));
+        return in_array($formula, explode(PHP_EOL, Cli::runQuietly('brew list | grep ' . $formula)));
     }
 
     /**
@@ -88,7 +75,7 @@ class Brew
         }
 
         try {
-            return $this->cli->run('brew install ' . $formula . ' ' . implode(' ', $options));
+            return Cli::run('brew install ' . $formula . ' ' . implode(' ', $options));
         } catch (ProcessFailedException $e) {
             throw new \DomainException('Brew was unable to install [' . $formula . '].', 0, $e);
         }
@@ -117,7 +104,7 @@ class Brew
     public function uninstall(string $formula, array $options = []): string
     {
         try {
-            return $this->cli->run('brew uninstall ' . $formula . ' ' . implode(' ', $options));
+            return Cli::run('brew uninstall ' . $formula . ' ' . implode(' ', $options));
         } catch (ProcessFailedException $e) {
             throw new \DomainException('Brew was unable to uninstall [' . $formula . '].', 0, $e);
         }
@@ -133,7 +120,7 @@ class Brew
         $formulas = is_array($formulas) ? $formulas : [$formulas];
 
         foreach ($formulas as $formula) {
-            $this->cli->run('brew tap ' . $formula);
+            Cli::run('brew tap ' . $formula);
         }
     }
 
@@ -146,7 +133,7 @@ class Brew
         $formulas = is_array($formulas) ? $formulas : [$formulas];
 
         foreach ($formulas as $formula) {
-            $this->cli->run('brew untap ' . $formula);
+            Cli::run('brew untap ' . $formula);
         }
     }
 
@@ -156,6 +143,6 @@ class Brew
      */
     public function hasTap(string $formula): bool
     {
-        return strpos($this->cli->run('brew tap | grep ' . $formula), $formula) !== false;
+        return strpos(Cli::run('brew tap | grep ' . $formula), $formula) !== false;
     }
 }

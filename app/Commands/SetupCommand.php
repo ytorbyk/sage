@@ -2,7 +2,10 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\Brew;
+use App\Facades\File;
+use App\Facades\Stub;
 
 class SetupCommand extends Command
 {
@@ -17,7 +20,7 @@ class SetupCommand extends Command
      * @var string
      */
     protected $signature = self::COMMAND
-    . ' {--o|overwrite-config : Overwrite config with default values}';
+        . ' {--o|overwrite-config : Overwrite config with default values}';
 
     /**
      * @var string
@@ -25,59 +28,20 @@ class SetupCommand extends Command
     protected $description = 'Setup home folder and config';
 
     /**
-     * @var \App\Components\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @var \App\Components\Stubs
-     */
-    private $stubs;
-
-    /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Files $files
-     * @param \App\Components\Stubs $stubs
-     * @param \App\Components\CommandLine $cli
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Files $files,
-        \App\Components\Stubs $stubs,
-        \App\Components\CommandLine $cli
-    ) {
-        $this->brew = $brew;
-        $this->files = $files;
-        $this->stubs = $stubs;
-        $this->cli = $cli;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        if (!$this->brew->isBrewAvailable()) {
+        if (!Brew::isBrewAvailable()) {
             $this->info('Brew is not installed, it is required. Run the next command:');
             $this->comment('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"');
         }
 
         $this->task('Ensure home folder exists', function () {
-            $this->files->ensureDirExists(config('env.home'));
+            File::ensureDirExists(config('env.home'));
         });
 
-        if (!$this->files->exists(config('env.home_config')) || $this->option('overwrite-config')) {
+        if (!File::exists(config('env.home_config')) || $this->option('overwrite-config')) {
             $this->writeConfig(true);
             $this->info('Default config created, adjust it if needed.');
         } else {
@@ -101,7 +65,7 @@ class SetupCommand extends Command
 
         $this->task('Generate config', function () use ($config) {
             $content = $this->varExportShort($config, 1);
-            $this->files->put(
+            File::put(
                 config('env.home_config'), '<?php' . PHP_EOL . PHP_EOL . 'return ' . $content . ';' . PHP_EOL
             );
         });
@@ -112,7 +76,7 @@ class SetupCommand extends Command
      */
     private function loadDefaultConfig(): array
     {
-        return include $this->stubs->getPath('config.php');
+        return include Stub::getPath('config.php');
     }
 
     /**

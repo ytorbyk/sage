@@ -2,7 +2,9 @@
 
 namespace App\Commands\Database;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\File;
+use App\Facades\Cli;
 
 class ExportCommand extends Command
 {
@@ -21,29 +23,6 @@ class ExportCommand extends Command
     protected $description = 'Export and Gzip Database';
 
     /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli,
-        \App\Components\Files $files
-    ) {
-        $this->cli = $cli;
-        $this->files = $files;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
@@ -54,22 +33,22 @@ class ExportCommand extends Command
         $dumpPath = $this->getDumpPath($this->getDumpName($file));
         $packCommand = $this->getPackCommand($dumpPath);
 
-        $this->cli->passthru("mysqldump {$dbName} "
-            . "| pv -b -t -w 80 -N Export "
-            . "| sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
+        Cli::passthru("mysqldump {$dbName} "
+            . " | pv -b -t -w 80 -N Export "
+            . " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
             . " {$packCommand} > {$dumpPath}");
 
-        $this->job(sprintf('DB %s exported', $dbName));
+        $this->task(sprintf('DB %s exported', $dbName));
         $this->comment(sprintf('Dump path: %s', $dumpPath));
     }
 
     /**
      * @param string $dumpPath
-     * @return bool
+     * @return string
      */
-    private function getPackCommand(string $dumpPath): bool
+    private function getPackCommand(string $dumpPath): string
     {
-        return $this->files->extension($dumpPath) === 'gz' ? '| gzip' : '';
+        return File::extension($dumpPath) === 'gz' ? '| gzip' : '';
     }
 
     /**
@@ -78,7 +57,7 @@ class ExportCommand extends Command
      */
     private function getDumpName(string $file): string
     {
-        return in_array($this->files->extension($file), ['sql', 'gz'], true) ? $file : $file . '.sql.gz';
+        return in_array(File::extension($file), ['sql', 'gz'], true) ? $file : $file . '.sql.gz';
     }
 
     /**

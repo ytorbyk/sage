@@ -2,7 +2,9 @@
 
 namespace App\Commands\Database;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\File;
+use App\Facades\Cli;
 
 class ImportCommand extends Command
 {
@@ -21,16 +23,6 @@ class ImportCommand extends Command
     protected $description = 'Import Database';
 
     /**
-     * @var \App\Components\CommandLine
-     */
-    private $cli;
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
      * @var array
      */
     private $fileType = [
@@ -38,19 +30,6 @@ class ImportCommand extends Command
         'zip' => 'unzip -p',
         'sql' => '',
     ];
-
-    /**
-     * @param \App\Components\CommandLine $cli
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\CommandLine $cli,
-        \App\Components\Files $files
-    ) {
-        $this->cli = $cli;
-        $this->files = $files;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -73,8 +52,8 @@ class ImportCommand extends Command
             return;
         }
 
-        $fileType = $this->files->extension($file);
-        if (!isset($this->fileType[$this->files->extension($file)])) {
+        $fileType = File::extension($file);
+        if (!isset($this->fileType[File::extension($file)])) {
             $this->error(sprintf('The file type is not supported: %s', $fileType));
             return;
         }
@@ -85,17 +64,19 @@ class ImportCommand extends Command
 
         $tmpFilePath = config('env.tmp_path') . DIRECTORY_SEPARATOR . 'dump.sql';
         if (!empty($this->fileType[$fileType])) {
-            $this->files->ensureDirExists(config('env.tmp_path'));
-            $this->files->delete($tmpFilePath);
+            File::ensureDirExists(config('env.tmp_path'));
+            File::delete($tmpFilePath);
 
-            $this->cli->passthru("{$this->fileType[$fileType]} {$dbPath} | pv -b -t -w 80 -N Unpack  > {$tmpFilePath}");
+            Cli::passthru("{$this->fileType[$fileType]} {$dbPath} | pv -b -t -w 80 -N Unpack  > {$tmpFilePath}");
             $dumpPath = $tmpFilePath;
         }
 
-        $this->cli->passthru("pv {$dumpPath} -w 80 -N Import | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' | mysql --force {$name}");
+        Cli::passthru("pv {$dumpPath} -w 80 -N Import "
+            . " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
+            . " | mysql --force {$name}");
 
-        $this->files->delete($tmpFilePath);
-        $this->job('Imported!');
+        File::delete($tmpFilePath);
+        $this->task('Imported!');
     }
 
     /**
@@ -123,7 +104,7 @@ class ImportCommand extends Command
     private function getDumpList(): array
     {
         /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
-        $files = $this->files->files(config('env.db.dump_path'));
+        $files = File::files(config('env.db.dump_path'));
 
         $dumps = [];
         foreach ($files as $file) {
@@ -133,7 +114,7 @@ class ImportCommand extends Command
 
             $dumps[$file->getFilename()] = [
                 'name' => $file->getFilename(),
-                'size' => $this->files->getFormatedFileSize($file->getSize()),
+                'size' => File::getFormatedFileSize($file->getSize()),
                 'date' => date('d M Y', $file->getCTime()),
             ];
         }
@@ -164,6 +145,6 @@ class ImportCommand extends Command
      */
     private function verifyPath(string $dbPath): bool
     {
-        return $this->files->exists($dbPath) && $this->files->isFile($dbPath);
+        return File::exists($dbPath) && File::isFile($dbPath);
     }
 }

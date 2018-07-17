@@ -2,11 +2,14 @@
 
 namespace App\Commands;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 use App\Commands\DnsMasq\UninstallCommand as DnsMasqUninstall;
 use App\Commands\MySql\UninstallCommand as MySqlUninstall;
 use App\Commands\Apache\UninstallCommand as ApacheUninstall;
 use App\Commands\Php\UninstallCommand as PhpUninstall;
+
+use App\Facades\Brew;
+use App\Facades\File;
 
 class UninstallCommand extends Command
 {
@@ -21,27 +24,14 @@ class UninstallCommand extends Command
     protected $description = 'Uninstall all installed environment via Brew';
 
     /**
-     * @var \App\Components\Brew
+     * @var \App\Services\Brew
      */
     private $brew;
 
     /**
-     * @var \App\Components\Files
+     * @var \App\Services\Files
      */
     private $files;
-
-    /**
-     * @param \App\Components\Brew $brew
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Brew $brew,
-        \App\Components\Files $files
-    ) {
-        $this->brew = $brew;
-        $this->files = $files;
-        parent::__construct();
-    }
 
     /**
      * @return void
@@ -50,8 +40,8 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstalling local environment:');
 
-        $brewInstalled = $this->job('Check if Brew installed', function () {
-            return $this->brew->isBrewAvailable();
+        $brewInstalled = $this->task('Check if Brew installed', function () {
+            return Brew::isBrewAvailable();
         });
         if (!$brewInstalled) {
             $this->info('Brew is not installed. Nothing to uninstall!');
@@ -59,11 +49,11 @@ class UninstallCommand extends Command
 
         $this->call(DnsMasqUninstall::COMMAND);
         $this->call(MySqlUninstall::COMMAND, ['--force' => $this->option('force')]);
-        $this->call(ApacheUninstall::COMMAND);
+        $this->call(ApacheUninstall::COMMAND, ['--force' => $this->option('force')]);
         $this->call(PhpUninstall::COMMAND);
 
         if ($this->option('force')) {
-            $this->files->deleteDirectory(config('env.home'));
+            File::deleteDirectory(config('env.home'));
             $this->uninstallCompletion();
         }
 
@@ -77,25 +67,25 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall completion:');
 
-        $this->job(sprintf('Uninstall [%s]', config('env.completion.formula')), function () {
-            $this->brew->ensureUninstalled(config('env.completion.formula'));
+        $this->task(sprintf('Uninstall [%s]', config('env.completion.formula')), function () {
+            Brew::ensureUninstalled(config('env.completion.formula'));
         });
 
-        $this->job('Delete completion script', function () {
-            $this->files->delete(config('env.completion.brew_config_completion_path'));
+        $this->task('Delete completion script', function () {
+            File::delete(config('env.completion.brew_config_completion_path'));
         });
 
-        $this->job('Remove include Brew completion from Bash', function () {
+        $this->task('Remove include Brew completion from Bash', function () {
             $sourceText = config('env.completion.brew_completion');
 
             $bashrcPath = config('env.completion.bashrc_path');
-            if ($this->files->exists($bashrcPath)) {
-                $this->files->put($bashrcPath, str_replace($sourceText, '', $this->files->get($bashrcPath)));
+            if (File::exists($bashrcPath)) {
+                File::put($bashrcPath, str_replace($sourceText, '', File::get($bashrcPath)));
             }
 
             $bashProfilePath = config('env.completion.bash_profile_path');
-            if ($this->files->exists($bashProfilePath)) {
-                $this->files->put($bashProfilePath, str_replace($sourceText, '', $this->files->get($bashProfilePath)));
+            if (File::exists($bashProfilePath)) {
+                File::put($bashProfilePath, str_replace($sourceText, '', File::get($bashProfilePath)));
             }
         });
     }

@@ -2,7 +2,8 @@
 
 namespace App\Commands\Apache;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
+use App\Facades\BrewService;
 
 class StopCommand extends Command
 {
@@ -19,27 +20,12 @@ class StopCommand extends Command
     protected $description = 'Stop Apache service';
 
     /**
-     * @var \App\Components\Site\Apache
-     */
-    private $apache;
-
-    /**
-     * @param \App\Components\Site\Apache $apache
-     */
-    public function __construct(
-        \App\Components\Site\Apache $apache
-    ) {
-        $this->apache = $apache;
-        parent::__construct();
-    }
-
-    /**
      * @return void
      */
     public function handle(): void
     {
-        $this->job('Apache Stop', function () {
-            $this->apache->stop();
+        $this->task('Apache Stop', function () {
+            BrewService::stop(config('env.apache.formula'));
         });
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Commands\DnsMasq;
 
-use LaravelZero\Framework\Commands\Command;
+use App\Command;
 
 class RestartCommand extends Command
 {

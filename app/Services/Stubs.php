@@ -1,24 +1,12 @@
 <?php
 
-namespace App\Components;
+namespace App\Services;
+
+use App\Facades\File;
 
 class Stubs
 {
-    const STUB_DIR = 'stubs';
-
-    /**
-     * @var \App\Components\Files
-     */
-    private $files;
-
-    /**
-     * @param \App\Components\Files $files
-     */
-    public function __construct(
-        \App\Components\Files $files
-    ) {
-        $this->files = $files;
-    }
+    protected const STUB_DIR = 'stubs';
 
     /**
      * @param string $name
@@ -35,7 +23,7 @@ class Stubs
      */
     public function isExist(string $name): bool
     {
-        return $this->files->exists($this->getPath($name));
+        return File::exists($this->getPath($name));
     }
 
     /**
@@ -45,7 +33,7 @@ class Stubs
      */
     public function get(string $name, array $vars = []): string
     {
-        $content = $this->files->get($this->getPath($name));
+        $content = File::get($this->getPath($name));
 
         foreach ($vars as $name => $value) {
             $content = str_replace($name, $value, $content);

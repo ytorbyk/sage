@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Facades;
+
+use Illuminate\Support\Facades\Facade;
+
+/**
+ * @method static void configure()
+ * @method static void initDefaultLocalhostVHost()
+ * @method static void configureVHost(string $documentRoot, string $domain, array $aliases = [], bool $secure = true)
+ * @method static void deleteVHost(string $domain)
+ * @method static void linkPhp(string $version)
+ * @method static void unlinkPhp()
+ *
+ * @see \App\Services\Apache
+ */
+class ApacheHelper extends Facade
+{
+    /**
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'apache.helper';
+    }
+}

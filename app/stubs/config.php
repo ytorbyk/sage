@@ -22,7 +22,7 @@ return [
     ],
 
     'db' => [
-        'dump_path' => config('env.home') . DIRECTORY_SEPARATOR . 'databases',
+        'dump_path' => env('HOME') . DIRECTORY_SEPARATOR . 'Support' . DIRECTORY_SEPARATOR . 'databases',
     ],
 
     'apache' => [
