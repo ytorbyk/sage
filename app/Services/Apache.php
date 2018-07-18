@@ -70,6 +70,7 @@ class Apache
         foreach (config('env.php.versions') as $phpVersion) {
             $config = $this->removePhpVersion($config, $phpVersion);
         }
+        File::put(config('env.apache.config'), $config);
     }
 
     /**
