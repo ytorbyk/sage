@@ -32,9 +32,9 @@ class ExportCommand extends Command
             return;
         }
 
-        $file = $this->argument('file') ?: $dbName . '.' . date('d-m-Y');
+        $file = $this->argument('file') ?: $this->getDumpName($dbName);
 
-        $dumpPath = $this->getDumpPath($this->getDumpName($file));
+        $dumpPath = $this->getDumpPath($this->updateDumpExtension($file));
         $packCommand = $this->getPackCommand($dumpPath);
 
         Cli::passthru("mysqldump {$dbName} "
@@ -58,21 +58,31 @@ class ExportCommand extends Command
     }
 
     /**
-     * @param string $dumpPath
+     * @param string $dbName
      * @return string
      */
-    private function getPackCommand(string $dumpPath): string
+    private function getDumpName(string $dbName): string
     {
-        return File::extension($dumpPath) === 'gz' ? '| gzip' : '';
+        $defaultName = $dbName . '.' . date('d-m-Y') . '.sql.gz';
+        return $this->ask('Enter Dump file name (location)', $defaultName);
     }
 
     /**
      * @param string $file
      * @return string
      */
-    private function getDumpName(string $file): string
+    private function updateDumpExtension(string $file): string
     {
         return in_array(File::extension($file), ['sql', 'gz'], true) ? $file : $file . '.sql.gz';
+    }
+
+    /**
+     * @param string $dumpPath
+     * @return string
+     */
+    private function getPackCommand(string $dumpPath): string
+    {
+        return File::extension($dumpPath) === 'gz' ? '| gzip' : '';
     }
 
     /**
