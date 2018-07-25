@@ -24,16 +24,6 @@ class UninstallCommand extends Command
     protected $description = 'Uninstall all installed environment via Brew';
 
     /**
-     * @var \App\Services\Brew
-     */
-    private $brew;
-
-    /**
-     * @var \App\Services\Files
-     */
-    private $files;
-
-    /**
      * @return void
      */
     public function handle(): void

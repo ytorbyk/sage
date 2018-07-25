@@ -3,7 +3,6 @@
 namespace App\Commands;
 
 use App\Command;
-use App\Facades\Brew;
 use App\Facades\File;
 use App\Facades\Stub;
 
