@@ -58,7 +58,7 @@ _sage()
             ;;
 
             apache:uninstall)
-            opts="${opts} "
+            opts="${opts} --force"
             ;;
 
             db:create)
@@ -109,12 +109,12 @@ _sage()
             opts="${opts} "
             ;;
 
-            env:install)
-            opts="${opts} "
+            env:config-dump)
+            opts="${opts} --skip-custom"
             ;;
 
-            env:setup)
-            opts="${opts} --overwrite-config"
+            env:install)
+            opts="${opts} "
             ;;
 
             env:uninstall)
@@ -191,7 +191,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall env:completion env:install env:setup env:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug secure:generate secure:install secure:revoke site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall env:completion env:config-dump env:install env:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug secure:generate secure:install secure:revoke site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

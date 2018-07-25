@@ -42,6 +42,7 @@ class InstallCommand extends Command
             return;
         }
 
+        File::ensureDirExists(config('env.home_public'));
         File::ensureDirExists(config('env.logs_path'));
 
         $this->call(DnsMasqInstall::COMMAND);

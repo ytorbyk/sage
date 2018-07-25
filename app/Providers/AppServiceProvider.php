@@ -6,6 +6,8 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Command;
 use App\Facades\Brew as BrewFacade;
+use App\Facades\Stub as BrewStubs;
+
 use App\Services\Files;
 use App\Services\Stubs;
 use App\Services\CommandLine;
@@ -106,5 +108,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind('ioncube.helper', function () {
             return new IonCube;
         });
+
+        $this->mergeRecursiveConfigFrom(BrewStubs::getPath('config/env.php'), 'env');
+    }
+
+    /**
+     * @param string $path
+     * @param string $key
+     * @return void
+     */
+    protected function mergeRecursiveConfigFrom($path, $key)
+    {
+        config([$key => array_replace_recursive(require $path, config($key))]);
     }
 }

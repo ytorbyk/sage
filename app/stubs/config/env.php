@@ -22,7 +22,7 @@ return [
     ],
 
     'db' => [
-        'dump_path' => env('HOME') . DIRECTORY_SEPARATOR . 'Support' . DIRECTORY_SEPARATOR . 'databases',
+        'dump_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'databases',
     ],
 
     'apache' => [
@@ -31,7 +31,7 @@ return [
         'config' => config('env.home') . DIRECTORY_SEPARATOR . 'httpd.conf',
         'brew_config_path' => '/usr/local/etc/httpd/httpd.conf',
         'brew_config_dir_path' => '/usr/local/etc/httpd',
-        'localhost_path' => config('env.home') . DIRECTORY_SEPARATOR . 'sites' . DIRECTORY_SEPARATOR . 'localhost',
+        'localhost_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'localhost',
         'php_module' => 'LoadModule php{high_version}_module /usr/local/opt/php@{version}/lib/httpd/modules/libphp{high_version}.so',
         'php_module_header' => '#Load PHP Module',
     ],
@@ -48,7 +48,7 @@ return [
             '7.1',
             '7.2'
         ],
-        'mail_path' => env('HOME') . DIRECTORY_SEPARATOR . 'Support' . DIRECTORY_SEPARATOR . 'mail',
+        'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
         'smtp_catcher_path' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
     ],
 
@@ -67,6 +67,6 @@ return [
         'bash_profile_path' => env('HOME') . DIRECTORY_SEPARATOR . '.bash_profile'
     ],
 
-    'logs_path' => config('env.home') . DIRECTORY_SEPARATOR . 'logs',
+    'logs_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'logs',
     'tmp_path' => config('env.home') . DIRECTORY_SEPARATOR . 'tmp',
 ];

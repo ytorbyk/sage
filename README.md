@@ -24,16 +24,16 @@ brew upgrade
 
 2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `/usr/local/bin` folder. So it will be accessible in Terminal everywhere
 ```bash
-curl -L https://github.com/ytorbyk/sage/releases/download/0.2.2/sage.phar > /usr/local/bin/sage
+curl -L https://github.com/ytorbyk/sage/releases/download/0.3.0/sage.phar > /usr/local/bin/sage
 chmod +x /usr/local/bin/sage
 ```
 
-3. Create home folder and generate default configuration
+3. [Optional step] Customize configuration
 ```bash
-# It creates ~/.sage home folder and configuration in it ~/.sage/config.php.
-# You can customize it before next step if you want.
+# It creates configuration dump ~/Sage/config.php.
+# You can customize and move it to ~/.sage/config.php before next step if you want.
 
-sage env:setup
+sage env:config-dump
 ```
 
 4. Install and configure required environments

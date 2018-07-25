@@ -7,66 +7,63 @@ use App\Facades\Brew;
 use App\Facades\File;
 use App\Facades\Stub;
 
-class SetupCommand extends Command
+class ConfigDumpCommand extends Command
 {
     /**
      * 4 space indentation for array formatting
      */
     private const INDENT = '    ';
 
-    const COMMAND = 'env:setup';
+    const COMMAND = 'env:config-dump';
 
     /**
      * @var string
      */
     protected $signature = self::COMMAND
-        . ' {--o|overwrite-config : Overwrite config with default values}';
+        . ' {--s|skip-custom : Skip custom values}';
 
     /**
      * @var string
      */
-    protected $description = 'Setup home folder and config';
+    protected $description = 'Dump config values';
 
     /**
      * @return void
      */
     public function handle(): void
     {
-        if (!Brew::isBrewAvailable()) {
-            $this->info('Brew is not installed, it is required. Run the next command:');
-            $this->comment('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"');
-        }
-
-        $this->task('Ensure home folder exists', function () {
-            File::ensureDirExists(config('env.home'));
+        $this->task('Ensure public home folder exists', function () {
+            File::ensureDirExists(config('env.home_public'));
         });
 
-        if (!File::exists(config('env.home_config')) || $this->option('overwrite-config')) {
-            $this->writeConfig(true);
-            $this->info('Default config created, adjust it if needed.');
-        } else {
-            $this->writeConfig();
-        }
+        $this->writeConfig($this->option('skip-custom'));
 
-        $this->comment('Config: ' . config('env.home_config'));
-        $this->comment('Run: sage env:install');
+        $this->comment('Config dump: ' . $this->getConfigDumpPath());
+        $this->info('The config will not be used.');
+        $this->info('It could be customized and moved to: ' . config('env.config_path'));
+        $this->info('There should be changed values only, they will be merged with default values.');
     }
 
     /**
-     * @param bool $overwrite
+     * @return string
+     */
+    private function getConfigDumpPath(): string
+    {
+        return config('env.home_public') . DIRECTORY_SEPARATOR . 'config.php';
+    }
+
+    /**
+     * @param bool $skipCustom
      * @return void
      */
-    private function writeConfig(bool $overwrite = false): void
+    private function writeConfig(bool $skipCustom = false): void
     {
-        $config = $this->loadDefaultConfig();
-        if (!$overwrite) {
-            $config = array_replace_recursive($config, config('env'));
-        }
+        $config = $skipCustom ? $this->loadDefaultConfig() : config('env');
 
         $this->task('Generate config', function () use ($config) {
             $content = $this->varExportShort($config, 1);
             File::put(
-                config('env.home_config'), '<?php' . PHP_EOL . PHP_EOL . 'return ' . $content . ';' . PHP_EOL
+                $this->getConfigDumpPath(), '<?php' . PHP_EOL . PHP_EOL . 'return ' . $content . ';' . PHP_EOL
             );
         });
     }
@@ -76,7 +73,7 @@ class SetupCommand extends Command
      */
     private function loadDefaultConfig(): array
     {
-        return include Stub::getPath('config.php');
+        return include Stub::getPath('config/env.php');
     }
 
     /**
