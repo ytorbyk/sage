@@ -94,7 +94,7 @@ class UninstallCommand extends Command
             return PeclHelper::isInstalled($extension) ?: 'Uninstalled. Skip';
         });
         if ($apcuInstalled === true) {
-            $this->task(sprintf('[%s] uninstall ', $extension), function () use ($phpVersion, $extension) {
+            $this->task(sprintf('[%s] uninstall', $extension), function () use ($phpVersion, $extension) {
                 PeclHelper::uninstall($extension, $phpVersion);
             });
         }
