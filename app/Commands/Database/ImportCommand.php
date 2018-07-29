@@ -90,12 +90,7 @@ class ImportCommand extends Command
             return sprintf('%-50s %-15s %s', $dump['name'], $dump['size'], $dump['date']);
         }, $dumps);
 
-        return $this->menu('Import DB', $options)
-            ->setForegroundColour('green')
-            ->setBackgroundColour('black')
-            ->setExitButtonText('Cancel')
-            ->addLineBreak('-')
-            ->open();
+        return $this->menu('Import DB', $options);
     }
 
     /**
