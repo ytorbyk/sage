@@ -75,4 +75,15 @@ class Files extends \Illuminate\Filesystem\Filesystem
         }
         return $result;
     }
+
+    /**
+     * Read a file as a stream.
+     *
+     * @param string $filePath
+     * @return resource|false
+     */
+    public function readStream(string $filePath)
+    {
+        return fopen($filePath, 'rb');
+    }
 }

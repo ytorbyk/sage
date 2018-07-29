@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\File as SupportFile;
  * @method static bool isLink(string $path)
  * @method static string|bool readLink(string $path)
  * @method static string getFormatedFileSize(float $size)
+ * @method static array readStream(string $filePath)
  *
  * @see \App\Services\Files
  */
