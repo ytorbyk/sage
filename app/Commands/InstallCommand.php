@@ -45,6 +45,10 @@ class InstallCommand extends Command
         File::ensureDirExists(config('env.home_public'));
         File::ensureDirExists(config('env.logs_path'));
 
+        foreach (config('env.software') as $formula) {
+            $this->installFormula($formula);
+        }
+
         $this->call(DnsMasqInstall::COMMAND);
         $this->call(MySqlInstall::COMMAND);
         $this->call(DatabaseInstall::COMMAND);

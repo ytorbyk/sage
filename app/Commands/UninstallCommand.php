@@ -42,6 +42,10 @@ class UninstallCommand extends Command
         $this->call(ApacheUninstall::COMMAND, ['--force' => $this->option('force')]);
         $this->call(PhpUninstall::COMMAND);
 
+        foreach (config('env.software') as $formula) {
+            $this->uninstallFormula($formula);
+        }
+
         if ($this->option('force')) {
             File::deleteDirectory(config('env.home'));
             $this->uninstallCompletion();

@@ -67,6 +67,12 @@ return [
         'bash_profile_path' => env('HOME') . DIRECTORY_SEPARATOR . '.bash_profile'
     ],
 
+    'software' => [
+        'git',
+        'composer',
+        'bash'
+    ],
+
     'backup_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'backups',
     'logs_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'logs',
     'tmp_path' => config('env.home') . DIRECTORY_SEPARATOR . 'tmp',
