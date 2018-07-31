@@ -30,7 +30,7 @@ chmod +x /usr/local/bin/sage
 
 3. [Optional step] Customize configuration
 ```bash
-# It creates configuration dump ~/Sage/config.php.
+# It creates configuration dump ~/xSage/config.php.
 # You can customize and move it to ~/.sage/config.php before next step if you want.
 
 sage env:config-dump
