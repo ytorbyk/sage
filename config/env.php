@@ -6,7 +6,7 @@ $homeFolder = '.' . mb_strtolower($app['name']);
 
 $env = [
     'home' => env('HOME') . DIRECTORY_SEPARATOR . $homeFolder,
-    'home_public' => env('HOME') . DIRECTORY_SEPARATOR . $app['name'],
+    'home_public' => env('HOME') . DIRECTORY_SEPARATOR .'x' . $app['name'],
     'config_path' => env('HOME') . DIRECTORY_SEPARATOR . $homeFolder . DIRECTORY_SEPARATOR . 'config.php',
 ];
 
