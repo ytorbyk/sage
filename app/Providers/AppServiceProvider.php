@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             'installFormula',
             function (string $formula) {
                 /** @var Command $this */
-                $needInstall = $this->task('Need to be installed?', function () use ($formula) {
+                $needInstall = $this->task(sprintf('Does [%s] need to be installed?', $formula), function () use ($formula) {
                     return !BrewFacade::isInstalled($formula) ?: 'Installed. Skip';
                 });
 
@@ -48,13 +48,13 @@ class AppServiceProvider extends ServiceProvider
             'uninstallFormula',
             function (string $formula) {
                 /** @var Command $this */
-                $isInstalled = $this->task('Need to be uninstalled?', function () use ($formula) {
+                $isInstalled = $this->task(sprintf('Does [%s] need to be uninstalled?', $formula), function () use ($formula) {
                     return BrewFacade::isInstalled($formula) ?: 'Uninstalled. Skip';
                 });
 
                 if ($isInstalled === true) {
                     /** @var Command $this */
-                    $this->task(sprintf('Uninstall %s Brew formula', $formula), function () use ($formula) {
+                    $this->task(sprintf('Uninstall [%s] Brew formula', $formula), function () use ($formula) {
                         BrewFacade::uninstall($formula, ['--force']);
                     });
                 }
