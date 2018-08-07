@@ -149,6 +149,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->mergeRecursiveConfigFrom(BrewStubs::getPath('config/env.php'), 'env');
+        $this->mergeConfigFrom(BrewStubs::getPath('config/filesystems.php'), 'filesystems');
     }
 
     /**
