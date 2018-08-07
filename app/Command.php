@@ -10,6 +10,9 @@ use PhpSchool\CliMenu\Action\GoBackAction;
 /**
  * @method bool installFormula(string $formula)
  * @method bool uninstallFormula(string $formula)
+ * @method string getCurrentPath(?string $path)
+ * @method string getFilePath(string $file, string $defaultRoot)
+ * @method bool verifyPath(string $path, bool $isFile = true)
  */
 class Command extends \LaravelZero\Framework\Commands\Command
 {

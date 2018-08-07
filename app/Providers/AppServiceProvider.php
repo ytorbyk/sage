@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Command;
 use App\Facades\Brew as BrewFacade;
 use App\Facades\Stub as BrewStubs;
+use App\Facades\File as FileStubs;
 
 use App\Services\Files;
 use App\Services\Stubs;
@@ -60,6 +61,44 @@ class AppServiceProvider extends ServiceProvider
                 }
 
                 return $isInstalled;
+            }
+        );
+
+        Command::macro(
+            'getCurrentPath',
+            function (?string $path): string {
+                if (null === $path) {
+                    $hostPath = getcwd();
+                } elseif (strpos($path, '/') === 0) {
+                    $hostPath = $path;
+                } else {
+                    $hostPath = getcwd() . DIRECTORY_SEPARATOR . ltrim($path, DIRECTORY_SEPARATOR);
+                }
+
+                return $hostPath;
+            }
+        );
+
+        Command::macro(
+            'getFilePath',
+            function (string $file, string $defaultRoot): string {
+                if (strpos($file, '/') === 0) {
+                    $path = $file;
+                } elseif (strpos($file, './') === 0) {
+                    $path = getcwd() . DIRECTORY_SEPARATOR . substr($file, 2);
+                } else {
+                    $path = $defaultRoot . DIRECTORY_SEPARATOR . $file;
+                }
+
+                return $path;
+            }
+        );
+
+        Command::macro(
+            'verifyPath',
+            function (string $path, bool $isFile = true): bool {
+                return FileStubs::exists($path)
+                    && ($isFile && FileStubs::isFile($path)) || (!$isFile && FileStubs::isDirectory($path));
             }
         );
     }
