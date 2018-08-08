@@ -62,15 +62,30 @@ class ConfigureCommand extends Command
         }
 
         $configurations = $this->parseConfig($configData);
-        $this->importConfig($configurations, $magentoPath);
+        $this->importConfig($configurations);
+
+        $this->info('Import finished');
+
+        $this->task('Flush Magento cache', function () use ($magentoPath) {
+            $this->runMagentoCommand('cache:flush');
+        });
+    }
+
+    /**
+     * @param string $command
+     * @return string
+     */
+    private function runMagentoCommand(string $command): string
+    {
+        $magentoPath = $this->getCurrentPath($this->option('magento-path'));
+        return Cli::run(sprintf('php %s/bin/magento %s', $magentoPath, $command));
     }
 
     /**
      * @param array $configurations
-     * @param string $magentoPath
      * @return void
      */
-    private function importConfig(array $configurations, string $magentoPath): void
+    private function importConfig(array $configurations): void
     {
         $minPathLength = $this->getMaxLength($configurations, 'path');
         $minScopeLength = $this->getMaxLength($configurations, 'scope', 7);
@@ -87,10 +102,10 @@ class ConfigureCommand extends Command
             $scopeLength = $minScopeLength + $minScopeCodeLength + 4;
             $this->task(
                 sprintf("%-{$scopeLength}s %-{$minPathLength}s %s", $scopeComment, $path, $value),
-                function () use ($magentoPath, $path, $value, $scope, $scopeCode) {
+                function () use ($path, $value, $scope, $scopeCode) {
                     $scopeOptions = $scope !== 'default' ? sprintf('--scope %s --scope-code %s', $scope, $scopeCode) : '';
                     try {
-                        $output = Cli::run(sprintf('php %s/bin/magento config:set %s "%s" "%s"', $magentoPath, $scopeOptions, $path, $value));
+                        $output = $this->runMagentoCommand(sprintf('config:set %s "%s" "%s"', $scopeOptions, $path, $value));
                         $result = $output === 'Value was saved.' . PHP_EOL ? true : $output;
                     } catch (ProcessFailedException $e) {
                         $result = $this->errorText(trim($e->getProcess()->getOutput()));
@@ -153,9 +168,9 @@ class ConfigureCommand extends Command
                 $configurations = array_merge($configurations, $this->parseNestedConfigValues($scope, $scopeCode, $scopeData));
                 continue;
             }
+            $scope = $scope === 'stores' ? 'store' : $scope;
+            $scope = $scope === 'websites' ? 'website' : $scope;
             foreach ($scopeData as $scopeCode => $configData) {
-                $scope = $scope === 'stores' ? 'store' : $scope;
-                $scope = $scope === 'websites' ? 'website' : $scope;
                 $configurations = array_merge($configurations, $this->parseNestedConfigValues($scope, $scopeCode, $configData));
             }
         }
