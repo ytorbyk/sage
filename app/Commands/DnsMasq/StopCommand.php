@@ -24,7 +24,7 @@ class StopCommand extends Command
      */
     public function handle(): void
     {
-        $this->task('DnsMasq Start', function () {
+        $this->task('DnsMasq Stop', function () {
             BrewService::stop(config('env.dns.formula'));
         });
     }

@@ -24,7 +24,7 @@ class StopCommand extends Command
      */
     public function handle(): void
     {
-        $this->task('ElasticSearch Start', function () {
+        $this->task('ElasticSearch Stop', function () {
             BrewService::stop(config('env.elasticsearch.formula'));
         });
     }
