@@ -10,6 +10,7 @@ use App\Commands\Apache\InstallCommand as ApacheInstall;
 use App\Commands\Secure\InstallCommand as SecureInstall;
 use App\Commands\Php\InstallCommand as PhpInstall;
 use App\Commands\Php\SwitchCommand;
+use App\Commands\ElasticSearch\InstallCommand as ElasticSearchInstall;
 
 use App\Facades\Brew;
 use App\Facades\File;
@@ -57,6 +58,8 @@ class InstallCommand extends Command
         $this->call(PhpInstall::COMMAND);
 
         $this->call(SwitchCommand::COMMAND, ['version' => '7.1']);
+
+        $this->call(ElasticSearchInstall::COMMAND);
 
         $this->output->success(sprintf('%s is successfully installed and ready to use!', config('app.name')));
     }
