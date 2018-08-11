@@ -52,6 +52,17 @@ return [
         'smtp_catcher_path' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
     ],
 
+    'elasticsearch' => [
+        'formula' => 'elasticsearch@5.6',
+        'plugins' => [
+            'analysis-phonetic',
+            'analysis-icu'
+        ],
+        'brew_config_dir_path' => '/usr/local/etc/elasticsearch',
+        'data_dir_path' => '/usr/local/var/elasticsearch',
+        'log_dir_path' => '/usr/local/var/log/elasticsearch/'
+    ],
+
     'secure' => [
         'formula' => 'openssl',
         'certificates_path' => config('env.home') . DIRECTORY_SEPARATOR . 'certificates',

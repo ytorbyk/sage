@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                         BrewFacade::install($formula);
                     });
                 }
-                return $needInstall;
+                return $needInstall === true;
             }
         );
 
@@ -60,7 +60,7 @@ class AppServiceProvider extends ServiceProvider
                     });
                 }
 
-                return $isInstalled;
+                return $isInstalled === true;
             }
         );
 
