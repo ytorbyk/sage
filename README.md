@@ -24,7 +24,7 @@ brew upgrade
 
 2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `/usr/local/bin` folder. So it will be accessible in Terminal everywhere
 ```bash
-curl -L https://github.com/ytorbyk/sage/releases/download/0.7.0/sage.phar > /usr/local/bin/sage
+curl -L https://github.com/ytorbyk/sage/releases/download/0.7.1/sage.phar > /usr/local/bin/sage
 chmod +x /usr/local/bin/sage
 ```
 
