@@ -6,6 +6,7 @@ use App\Command;
 use App\Facades\Brew;
 use App\Facades\BrewService;
 use App\Facades\Cli;
+use App\Facades\File;
 use App\Facades\ApacheHelper;
 
 class InstallCommand extends Command
@@ -42,6 +43,7 @@ class InstallCommand extends Command
 
         $this->task('Configure Apache', function () {
             ApacheHelper::configure();
+            File::ensureDirExists('/usr/local/var/log/httpd');
         });
 
         $this->task('Create default Virtual Host (localhost)', function ()  {
