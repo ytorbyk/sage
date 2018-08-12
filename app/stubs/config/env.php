@@ -1,6 +1,13 @@
 <?php
 
 return [
+    'services' => [
+        'dns',
+        'apache',
+        'mysql',
+        'elasticsearch'
+    ],
+
     'dns' => [
         'formula' => 'dnsmasq',
         'domains' => ['test'],
