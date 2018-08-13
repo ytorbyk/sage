@@ -27,8 +27,7 @@ class InstallCommand extends Command
     {
         $this->info('Install ElasticSearch:');
 
-        $this->info('Install Java, since ElasticSearch depends on it:');
-        Cli::passthru('brew cask install java');
+        $this->ensureJavaInstalled();
 
         $needInstall = $this->installFormula(config('env.elasticsearch.formula'));
 
@@ -49,6 +48,22 @@ class InstallCommand extends Command
             $this->call(StartCommand::COMMAND);
         } else {
             $this->call(RestartCommand::COMMAND);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function ensureJavaInstalled(): void
+    {
+        $javaVersion = $this->task('Ensure Java VM is installed', function () {
+            $javaVersion = Cli::run('java -version 2>&1 | head -n 1 | cut -d\'"\' -f2');
+            $javaVersion = trim($javaVersion);
+            return !empty($javaVersion) ? $javaVersion . '. Skip' : false;
+        });
+
+        if (!$javaVersion) {
+            Cli::passthru('brew cask install java');
         }
     }
 
