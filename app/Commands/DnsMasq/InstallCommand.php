@@ -45,6 +45,7 @@ class InstallCommand extends Command
      */
     private function configureDnsMasq(): void
     {
+        File::ensureDirExists(config('env.home'));
         $this->createCustomConfigFile();
         $domains = (array)config('env.dns.domains');
         $this->setConfig($domains);
