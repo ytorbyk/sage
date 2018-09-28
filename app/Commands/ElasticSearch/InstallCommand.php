@@ -59,11 +59,11 @@ class InstallCommand extends Command
         $javaVersion = $this->task('Ensure Java VM is installed', function () {
             $javaVersion = Cli::run('java -version 2>&1 | head -n 1 | cut -d\'"\' -f2');
             $javaVersion = trim($javaVersion);
-            return !empty($javaVersion) ? $javaVersion . '. Skip' : false;
+            return (!empty($javaVersion) && strpos($javaVersion, 'No Java') === false) ? $javaVersion . '. Skip' : false;
         });
 
         if (!$javaVersion) {
-            Cli::passthru('brew cask install java');
+            Cli::passthru('brew cask install homebrew/cask-versions/java8');
         }
     }
 
