@@ -6,6 +6,8 @@ if (version_compare(PHP_VERSION, '7.1.3') < 0) {
     exit(0);
 }
 
+ini_set('max_execution_time', 0);
+
 define('LARAVEL_START', microtime(true));
 
 /*

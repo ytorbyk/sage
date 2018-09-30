@@ -40,7 +40,7 @@ class CommandLine
      */
     private function runCommand(string $command): Process
     {
-        $process = new Process($command);
+        $process = new Process($command, null, null, null, 1800);
         $process->run();
         return $process;
     }
