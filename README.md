@@ -11,7 +11,7 @@ Sage is helper for development environment on macOS (High Sierra, Mojave).
 # if not installed
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 
-# add the next line into your ~/.bash_profile or ~/.bashrc file (create if not exists)
+# add the next line into your ~/.bash_profile file (create if not exists)
 
 export PATH="$PATH:$HOME/bin:$HOME/.composer/vendor/bin"
 
