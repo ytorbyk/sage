@@ -1,7 +1,7 @@
 
 ## Sage
 
-Sage helper for development environment on macOS (High Sierra, Mojave).
+Sage is helper for development environment on macOS (High Sierra, Mojave).
 
 
 ## Installation
