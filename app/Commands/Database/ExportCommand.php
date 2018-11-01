@@ -37,7 +37,7 @@ class ExportCommand extends Command
         $dumpPath = $this->getDumpPath($this->updateDumpExtension($file));
         $packCommand = $this->getPackCommand($dumpPath);
 
-        Cli::passthru("mysqldump {$dbName} "
+        Cli::passthru("mysqldump {$dbName} --routines=true"
             . " | pv -b -t -w 80 -N Export "
             . " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
             . " {$packCommand} > {$dumpPath}");
