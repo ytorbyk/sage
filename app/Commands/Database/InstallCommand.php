@@ -40,7 +40,10 @@ class InstallCommand extends Command
             if ((!File::exists($bashrcPath) || strpos(File::get($bashrcPath), 'LC_ALL') === false)
                 && (!File::exists($bashProfilePath) || strpos(File::get($bashProfilePath), 'LC_ALL') === false)
             ) {
-                File::append($bashProfilePath, PHP_EOL . 'export LC_ALL=C' . PHP_EOL);
+                File::append(
+                    $bashProfilePath,
+                    PHP_EOL . 'export LC_ALL=en_US.UTF-8' . PHP_EOL . 'export LANG=en_US.UTF-8' . PHP_EOL
+                );
             }
         });
     }
