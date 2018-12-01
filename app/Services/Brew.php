@@ -30,7 +30,7 @@ class Brew
      */
     public function unlink(string $formula): string
     {
-        return Cli::run('brew unlink ' . $formula . ' --force');
+        return Cli::run('brew unlink ' . $formula);
     }
 
     /**
