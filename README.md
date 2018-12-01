@@ -13,7 +13,7 @@ Sage is helper for development environment on macOS (High Sierra, Mojave).
 
 # add the next line into your ~/.bash_profile file (create if not exists)
 
-export PATH="$PATH:$HOME/bin:$HOME/.composer/vendor/bin"
+export PATH="$PATH:/usr/local/sbin:$HOME/bin:$HOME/.composer/vendor/bin"
 
 
 # if installed
@@ -22,9 +22,9 @@ brew update
 brew upgrade
 ```
 
-2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `/usr/local/bin` folder. So it will be accessible in Terminal everywhere
+2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `$HOME/bin/bin` folder.
 ```bash
-curl -L https://github.com/ytorbyk/sage/releases/download/0.8.4/sage.phar > $HOME/bin/sage
+curl -L https://github.com/ytorbyk/sage/releases/download/0.8.6/sage.phar > $HOME/bin/sage
 chmod +x $HOME/bin/sage
 ```
 
