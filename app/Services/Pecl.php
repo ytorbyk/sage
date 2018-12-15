@@ -119,6 +119,7 @@ class Pecl
         $extensionVersion = isset($this->extensions[$extension][$phpVersion]) ? $this->extensions[$extension][$phpVersion] : null;
         $extensionVersion = $extensionVersion === null ? $extension : $extension . '-' . $extensionVersion;
 
+        Cli::run("pecl uninstall -r $extension");
         $result = Cli::run("pecl install $extensionVersion");
 
         if (!preg_match("/Installing '(.*{$extension}.so)'/", $result)) {
