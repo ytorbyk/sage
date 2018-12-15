@@ -29,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Command::macro(
             'installFormula',
-            function (string $formula) {
+            function (string $formula, array $options = [], string $tap = null) {
                 /** @var Command $this */
                 $needInstall = $this->task(sprintf('Does [%s] need to be installed?', $formula), function () use ($formula) {
                     return !BrewFacade::isInstalled($formula) ?: 'Installed. Skip';
@@ -37,8 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
                 if ($needInstall === true) {
                     /** @var Command $this */
-                    $this->task(sprintf('Install [%s] Brew formula', $formula), function () use ($formula) {
-                        BrewFacade::install($formula);
+                    $this->task(sprintf('Install [%s] Brew formula', $formula), function () use ($formula, $options, $tap) {
+                        BrewFacade::install($formula, $options, $tap);
                     });
                 }
                 return $needInstall === true;

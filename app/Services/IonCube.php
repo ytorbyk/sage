@@ -102,7 +102,7 @@ class IonCube
     public function install(string $phpVersion): void
     {
         if (empty($this->setting[$phpVersion])) {
-            throw new \RuntimeException(sprintf('PHP v%s is not supported'));
+            throw new \RuntimeException(sprintf('PHP v%s is not supported', $phpVersion));
         }
 
         File::ensureDirExists(config('env.tmp_path'));

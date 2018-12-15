@@ -63,15 +63,15 @@ class Brew
     /**
      * @param string $formula
      * @param string[] $options
-     * @param string[] $taps
+     * @param string|null $tap
      * @return string
      *
      * @throws \DomainException
      */
-    public function install(string $formula, array $options = [], array $taps = []): string
+    public function install(string $formula, array $options = [], string $tap = null): string
     {
-        if (count($taps) > 0) {
-            $this->tap($taps);
+        if (!empty($tap)) {
+            $this->tap($tap);
         }
 
         try {
@@ -109,7 +109,6 @@ class Brew
             throw new \DomainException('Brew was unable to uninstall [' . $formula . '].', 0, $e);
         }
     }
-
 
     /**
      * @param string[] $formulas

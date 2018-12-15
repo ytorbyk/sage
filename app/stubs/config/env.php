@@ -44,16 +44,20 @@ return [
     ],
 
     'php' => [
-        'main_version' => '7.2',
+        'main_version' => '7.3',
         'brew_path' => '/usr/local/bin/php',
         'brew_etc_path' => '/usr/local/etc/php',
         'brew_lib_path' => '/usr/local/lib/php',
         'brew_pear_path' => '/usr/local/share/pear',
+        'taps' => [
+            '7.0' => 'samgranger/php'
+        ],
         'versions' => [
             '5.6',
             '7.0',
             '7.1',
-            '7.2'
+            '7.2',
+            '7.3'
         ],
         'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
         'smtp_catcher_path' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',

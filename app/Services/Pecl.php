@@ -9,7 +9,6 @@ use App\Facades\Cli;
 class Pecl
 {
     const XDEBUG_EXTENSION = 'xdebug';
-    const APCU_EXTENSION = 'apcu';
 
     const NORMAL_EXTENSION_TYPE = 'extension';
     const ZEND_EXTENSION_TYPE = 'zend_extension';
@@ -20,11 +19,8 @@ class Pecl
     private $extensions = [
         self::XDEBUG_EXTENSION => [
             '5.6' => '2.5.5',
+            '7.3' => '2.7.0beta1',
             'extension_type' => self::ZEND_EXTENSION_TYPE
-        ],
-        self::APCU_EXTENSION => [
-            '5.6' => '4.0.11',
-            'extension_type' => self::NORMAL_EXTENSION_TYPE
         ]
     ];
 

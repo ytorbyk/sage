@@ -8,7 +8,7 @@ use NunoMaduro\LaravelConsoleMenu\MenuOption;
 use PhpSchool\CliMenu\Action\GoBackAction;
 
 /**
- * @method bool installFormula(string $formula)
+ * @method bool installFormula(string $formula, array $options = [], string $taps = null)
  * @method bool uninstallFormula(string $formula)
  * @method string getCurrentPath(?string $path)
  * @method string getFilePath(string $file, string $defaultRoot)

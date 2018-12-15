@@ -66,7 +66,6 @@ class UninstallCommand extends Command
             PhpHelper::link($phpVersion);
         });
 
-        $this->uninstallPeclExtension($phpVersion, Pecl::APCU_EXTENSION);
         $this->uninstallPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
 
         $this->task('[ioncube] uninstall', function () {

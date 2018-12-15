@@ -57,7 +57,10 @@ class InstallCommand extends Command
             }
         });
 
-        if ($this->installFormula(PhpHelper::getFormula($phpVersion))) {
+        $phpTaps = config('env.php.taps');
+        $taps = !empty($phpTaps[$phpVersion]) ? $phpTaps[$phpVersion] : null;
+
+        if ($this->installFormula(PhpHelper::getFormula($phpVersion), [], $taps)) {
             BrewService::stop(PhpHelper::getFormula($phpVersion));
         }
 
@@ -73,7 +76,7 @@ class InstallCommand extends Command
         $this->task('PECL updating channel', function () {
             PeclHelper::updatePeclChannel();
         });
-        $this->installPeclExtension($phpVersion, Pecl::APCU_EXTENSION);
+
         $this->installPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
 
         $this->installIonCube($phpVersion);
@@ -112,14 +115,24 @@ class InstallCommand extends Command
         $ioncubeNeedInstall = $this->task('[ioncube] need to be installed?', function () use ($phpVersion) {
             return !IonCubeHelper::isInstalled() ?: 'Installed. Skip';
         });
+
+        $ioncubeNeedConfigure = true;
         if ($ioncubeNeedInstall === true) {
-            $this->task('[ioncube] install', function () use ($phpVersion) {
-                IonCubeHelper::install($phpVersion);
+            $ioncubeNeedConfigure = $this->task('[ioncube] install', function () use ($phpVersion) {
+                try {
+                    IonCubeHelper::install($phpVersion);
+                } catch (\Exception $e) {
+                    return $e->getMessage();
+                }
+                return true;
             });
         }
-        $this->task('[ioncube] configure', function () {
-            IonCubeHelper::configure();
-        });
+
+        if ($ioncubeNeedConfigure === true) {
+            $this->task('[ioncube] configure', function () {
+                IonCubeHelper::configure();
+            });
+        }
     }
 
     /**
