@@ -24,7 +24,7 @@ return [
     | number MAJOR.MINOR.PATCH when an update happens: https://semver.org.
     |
     */
-    'version' => '0.8.6',
+    'version' => '0.8.7',
 
     /*
     |--------------------------------------------------------------------------
@@ -36,7 +36,7 @@ return [
     | services your application utilizes. Should be true in production.
     |
     */
-    'production' => false,
+    'production' => true,
 
     /*
     |--------------------------------------------------------------------------
