@@ -1,0 +1,15 @@
+{
+    "chmod": "0755",
+    "directories": [
+        "app",
+        "bootstrap",
+        "config",
+        "vendor"
+    ],
+    "files": [
+        "composer.json"
+    ],
+    "exclude-composer-files": false,
+    "compression": "GZ",
+    "shebang": "#!/usr/bin/php"
+}
