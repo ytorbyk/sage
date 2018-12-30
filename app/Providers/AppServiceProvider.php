@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 
 use App\Command;
+use App\Helper\ConfigMerge;
 use App\Facades\Brew as BrewFacade;
 use App\Facades\Stub as BrewStubs;
 use App\Facades\File as FileStubs;
@@ -22,6 +23,8 @@ use App\Services\IonCube;
 
 class AppServiceProvider extends ServiceProvider
 {
+    use ConfigMerge;
+
     /**
      * @return void
      */
@@ -148,17 +151,9 @@ class AppServiceProvider extends ServiceProvider
             return new IonCube;
         });
 
-        $this->mergeRecursiveConfigFrom(BrewStubs::getPath('config/env.php'), 'env');
-        $this->mergeConfigFrom(BrewStubs::getPath('config/filesystems.php'), 'filesystems');
-    }
+        $this->mergeRecursiveConfigFromPath(BrewStubs::getPath('config/env.php'), 'env');
+        $this->mergeRecursiveConfigFromPath(BrewStubs::getPath('config/filesystems.php'), 'env.filesystems');
+        $this->mergeRecursiveConfigFrom(config('env.filesystems'), 'filesystems');
 
-    /**
-     * @param string $path
-     * @param string $key
-     * @return void
-     */
-    protected function mergeRecursiveConfigFrom($path, $key)
-    {
-        config([$key => array_replace_recursive(require $path, config($key))]);
     }
 }
