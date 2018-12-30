@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ae0fe480a5728dda8d401afd1d510bd",
+    "content-hash": "102cfb2a2edf3e3d70cc885e8323fa6d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -809,16 +809,16 @@
         },
         {
             "name": "laravel-zero/framework",
-            "version": "v5.7.16",
+            "version": "v5.7.17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-zero/framework.git",
-                "reference": "72761b535a7d3b0ad2a8aaa3c81d719d19b2eb31"
+                "reference": "ad60b52ac050085d2fee1ecd4b543905dae9ff49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/72761b535a7d3b0ad2a8aaa3c81d719d19b2eb31",
-                "reference": "72761b535a7d3b0ad2a8aaa3c81d719d19b2eb31",
+                "url": "https://api.github.com/repos/laravel-zero/framework/zipball/ad60b52ac050085d2fee1ecd4b543905dae9ff49",
+                "reference": "ad60b52ac050085d2fee1ecd4b543905dae9ff49",
                 "shasum": ""
             },
             "require": {
@@ -881,7 +881,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-12-10T18:55:36+00:00"
+            "time": "2018-12-27T10:13:46+00:00"
         },
         {
             "name": "league/flysystem",
@@ -968,17 +968,64 @@
             "time": "2018-11-23T23:41:29+00:00"
         },
         {
-            "name": "nesbot/carbon",
-            "version": "1.36.1",
+            "name": "marcj/topsort",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "63da8cdf89d7a5efe43aabc794365f6e7b7b8983"
+                "url": "https://github.com/marcj/topsort.php.git",
+                "reference": "387086c2db60ee0a27ac5df588c0f0b30c6bdc4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/63da8cdf89d7a5efe43aabc794365f6e7b7b8983",
-                "reference": "63da8cdf89d7a5efe43aabc794365f6e7b7b8983",
+                "url": "https://api.github.com/repos/marcj/topsort.php/zipball/387086c2db60ee0a27ac5df588c0f0b30c6bdc4b",
+                "reference": "387086c2db60ee0a27ac5df588c0f0b30c6bdc4b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "dev-master",
+                "phpunit/phpunit": "~4.0",
+                "symfony/console": "~2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "MJS\\TopSort\\": "src/",
+                    "MJS\\TopSort\\Tests\\": "tests/Tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marc J. Schmidt",
+                    "email": "marc@marcjschmidt.de"
+                }
+            ],
+            "description": "High-Performance TopSort/Dependency resolving algorithm",
+            "keywords": [
+                "dependency resolving",
+                "topological sort",
+                "topsort"
+            ],
+            "time": "2016-11-19T14:58:11+00:00"
+        },
+        {
+            "name": "nesbot/carbon",
+            "version": "1.36.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/briannesbitt/Carbon.git",
+                "reference": "cd324b98bc30290f233dd0e75e6ce49f7ab2a6c9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/cd324b98bc30290f233dd0e75e6ce49f7ab2a6c9",
+                "reference": "cd324b98bc30290f233dd0e75e6ce49f7ab2a6c9",
                 "shasum": ""
             },
             "require": {
@@ -1023,7 +1070,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2018-11-22T18:23:02+00:00"
+            "time": "2018-12-28T10:07:33+00:00"
         },
         {
             "name": "nunomaduro/collision",
@@ -2246,6 +2293,146 @@
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
             "time": "2018-11-11T19:52:12+00:00"
+        },
+        {
+            "name": "tivie/php-os-detector",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tivie/php-os-detector.git",
+                "reference": "9461dcd85c00e03842264f2fc8ccdc8d46867321"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tivie/php-os-detector/zipball/9461dcd85c00e03842264f2fc8ccdc8d46867321",
+                "reference": "9461dcd85c00e03842264f2fc8ccdc8d46867321",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "4.3.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tivie\\OS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "APACHE 2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Estevão Soares dos Santos",
+                    "email": "estevao@soares-dos-santos.com"
+                }
+            ],
+            "description": "A small utility library that detects the OS the server is running on",
+            "homepage": "http://tivie.github.com/php-os-detector/",
+            "keywords": [
+                "detection",
+                "detector",
+                "identification",
+                "operating system",
+                "os",
+                "os detection"
+            ],
+            "time": "2017-10-21T03:33:59+00:00"
+        },
+        {
+            "name": "vaimo/composer-patches",
+            "version": "4.7.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/vaimo/composer-patches.git",
+                "reference": "abadc70798f7c802fee740b5930633a977888983"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/vaimo/composer-patches/zipball/abadc70798f7c802fee740b5930633a977888983",
+                "reference": "abadc70798f7c802fee740b5930633a977888983",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0",
+                "marcj/topsort": "^1.0",
+                "php": ">=5.3.0",
+                "tivie/php-os-detector": "^1.0"
+            },
+            "require-dev": {
+                "vaimo/composer-changelogs": "^0.6.2"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Vaimo\\ComposerPatches\\Plugin",
+                "patcher_plugin": true,
+                "changelog": {
+                    "source": "changelog.json"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Vaimo\\ComposerPatches\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Allan Paiste",
+                    "email": "allan.paiste@vaimo.com"
+                }
+            ],
+            "description": "Applies a patch from a local or remote file to any package that is part of a given composer project. Patches can be defined both on project and on package level. Optional support for patch versioning, sequencing, custom patch applier configuration and patch command for testing/troubleshooting added patches.",
+            "keywords": [
+                "Fixes",
+                "back-ports",
+                "backports",
+                "bulk patches",
+                "bundled patches",
+                "composer command",
+                "composer plugin",
+                "configurable patch applier",
+                "development patches",
+                "downloaded patches",
+                "environment flags",
+                "hot-fixes",
+                "hotfixes",
+                "indirect restrictions",
+                "maintenance",
+                "maintenance tools",
+                "multi-version patches",
+                "multiple formats",
+                "os-specific config",
+                "package bug-fix",
+                "package patches",
+                "patch branching",
+                "patch command",
+                "patch description",
+                "patch exclusion",
+                "patch header",
+                "patch meta-data",
+                "patch resolve",
+                "patch search",
+                "patch skipping",
+                "patcher",
+                "patching",
+                "plugin",
+                "remote patch files",
+                "resolve patches",
+                "skipped packages",
+                "tools",
+                "utilities",
+                "utility",
+                "utils",
+                "version restriction"
+            ],
+            "time": "2018-09-27T17:49:01+00:00"
         }
     ],
     "packages-dev": [],

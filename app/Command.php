@@ -4,7 +4,6 @@ namespace App;
 
 use PhpSchool\CliMenu\CliMenu;
 use PhpSchool\CliMenu\Builder\CliMenuBuilder;
-use NunoMaduro\LaravelConsoleMenu\Menu;
 use NunoMaduro\LaravelConsoleMenu\MenuOption;
 use PhpSchool\CliMenu\Action\GoBackAction;
 
@@ -64,7 +63,7 @@ class Command extends \LaravelZero\Framework\Commands\Command
      * @param null $task
      * @return null
      */
-    public function task(string $title = '', $task = null): bool
+    public function task(string $title = '', $task = null)
     {
         $this->output->write("$title: <comment>processing...</comment>");
 
@@ -98,7 +97,7 @@ class Command extends \LaravelZero\Framework\Commands\Command
      * @param array $options
      * @return string|null
      */
-    public function menu(string $title, array $options = []): Menu
+    public function menu(string $title, array $options = [])
     {
         $addMenuOption = function (CliMenuBuilder $menuBuilder, array $options, &$optionSelected) use (&$addMenuOption) : void
         {

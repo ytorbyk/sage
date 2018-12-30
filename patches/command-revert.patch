@@ -1,0 +1,28 @@
+
+@package laravel-zero/framework
+
+Index: src/Commands/Command.php
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/Commands/Command.php	(date 1546196279000)
++++ src/Commands/Command.php	(date 1546196279000)
+@@ -50,7 +50,7 @@
+     /**
+      * Returns a menu builder.
+      */
+-    public function menu(string $title, array $options = []): Menu
++    public function menu(string $title, array $options = [])
+     {
+         return $this->__call('menu', func_get_args());
+     }
+@@ -59,7 +59,7 @@
+      * Performs the given task, outputs and
+      * returns the result.
+      */
+-    public function task(string $title = '', $task = null): bool
++    public function task(string $title = '', $task = null)
+     {
+         return $this->__call('task', func_get_args());
+     }
