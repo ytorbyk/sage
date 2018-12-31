@@ -11,5 +11,9 @@
     ],
     "exclude-composer-files": false,
     "compression": "GZ",
-    "shebang": "#!/usr/bin/php"
+    "shebang": "#!/usr/bin/php",
+    "compactors": [
+        "Herrera\\Box\\Compactor\\Php",
+        "Herrera\\Box\\Compactor\\Json"
+    ]
 }
