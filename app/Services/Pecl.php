@@ -19,7 +19,7 @@ class Pecl
     private $extensions = [
         self::XDEBUG_EXTENSION => [
             '5.6' => '2.5.5',
-            '7.3' => '2.7.0beta1',
+            '7.3' => '2.7.0RC1',
             'extension_type' => self::ZEND_EXTENSION_TYPE
         ]
     ];

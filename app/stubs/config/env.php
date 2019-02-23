@@ -50,7 +50,8 @@ return [
         'brew_lib_path' => '/usr/local/lib/php',
         'brew_pear_path' => '/usr/local/share/pear',
         'taps' => [
-            '7.0' => 'samgranger/php'
+            '5.6' => 'exolnet/homebrew-deprecated',
+            '7.0' => 'exolnet/homebrew-deprecated'
         ],
         'versions' => [
             '5.6',
