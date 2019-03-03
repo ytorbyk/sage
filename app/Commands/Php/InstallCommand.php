@@ -27,6 +27,11 @@ class InstallCommand extends Command
     protected $description = 'Install and configure PHP';
 
     /**
+     * @var array
+     */
+    protected $supportedSmtpCatchers = ['files', 'mailhog'];
+
+    /**
      * @return void
      */
     public function handle(): void
@@ -160,9 +165,12 @@ class InstallCommand extends Command
     {
         File::ensureDirExists(PeclHelper::getConfdPath());
 
+        $smtpCatcher = config('env.php.smtp_catcher');
+        $smtpCatcher = in_array($smtpCatcher, $this->supportedSmtpCatchers, true) ? $smtpCatcher : 'files';
+
         $phpZIni = Stub::get('php/z-performance.ini', [
             'TIMEZONE' => $this->getSystemTimeZone(),
-            'SMTP_CATCHER_PATH' => config('env.php.smtp_catcher_path')
+            'SMTP_CATCHER_PATH' => config('env.php.smtp_catcher_' . $smtpCatcher)
         ]);
         File::put(PeclHelper::getConfdPath() . 'z-performance.ini', $phpZIni);
     }
@@ -173,7 +181,7 @@ class InstallCommand extends Command
     private function setupSmtpCatcher()
     {
         $mailDir = config('env.php.mail_path');
-        $smtpCatcherPath = config('env.php.smtp_catcher_path');
+        $smtpCatcherPath = config('env.php.smtp_catcher_files');
         File::ensureDirExists($mailDir);
 
         $smtpCatcher = Stub::get('php/smtp_catcher.php', [

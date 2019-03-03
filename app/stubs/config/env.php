@@ -60,8 +60,10 @@ return [
             '7.2',
             '7.3'
         ],
+        'smtp_catcher' => 'mailhog',
+        'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
         'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
-        'smtp_catcher_path' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
+        'smtp_catcher_files' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
     ],
 
     'elasticsearch' => [
