@@ -38,9 +38,14 @@ class ExportCommand extends Command
         $dumpPath = $this->getDumpPath($this->updateDumpExtension($file));
         $packCommand = $this->getPackCommand($dumpPath);
 
+        $filter = "sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' "
+            .  " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*PROCEDURE/PROCEDURE/'"
+            .  " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*FUNCTION/FUNCTION/'"
+            .  " | sed -e 's/ROW_FORMAT=FIXED//g'";
+
         Cli::passthru("mysqldump {$dbName} --routines=true"
-            . " | pv -b -t -w 80 -N Export "
-            . (!$this->option('skip-filter') ? " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' " : '')
+            . ' | pv -b -t -w 80 -N Export '
+            . (!$this->option('skip-filter') ? " | {$filter}" : '')
             . " {$packCommand} > {$dumpPath}");
 
         $this->task(sprintf('DB %s exported', $dbName));

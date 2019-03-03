@@ -72,8 +72,13 @@ class ImportCommand extends Command
             $dumpPath = $tmpFilePath;
         }
 
+        $filter = "sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' "
+            .  " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*PROCEDURE/PROCEDURE/'"
+            .  " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*FUNCTION/FUNCTION/'"
+            .  " | sed -e 's/ROW_FORMAT=FIXED//g'";
+
         Cli::passthru("pv {$dumpPath} -w 80 -N Import "
-            . (!$this->option('skip-filter') ? " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' " : '')
+            . (!$this->option('skip-filter') ? " | {$filter}" : '')
             . " | mysql --force {$name}");
 
         File::delete($tmpFilePath);
