@@ -15,7 +15,8 @@ class ImportCommand extends Command
      */
     protected $signature = self::COMMAND
         . ' {name? : Database name}'
-        . ' {file? : File name}';
+        . ' {file? : File name}'
+        . ' {--s|skip-filter : Do not filter DEFINER and ROW_FORMAT}';
 
     /**
      * @var string
@@ -72,7 +73,7 @@ class ImportCommand extends Command
         }
 
         Cli::passthru("pv {$dumpPath} -w 80 -N Import "
-            . " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
+            . (!$this->option('skip-filter') ? " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' " : '')
             . " | mysql --force {$name}");
 
         File::delete($tmpFilePath);

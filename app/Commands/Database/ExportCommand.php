@@ -15,7 +15,8 @@ class ExportCommand extends Command
      */
     protected $signature = self::COMMAND
         . ' {name? : Database name}'
-        . ' {file? : File name}';
+        . ' {file? : File name}'
+        . ' {--s|skip-filter : Do not filter DEFINER and ROW_FORMAT}';
 
     /**
      * @var string
@@ -39,7 +40,7 @@ class ExportCommand extends Command
 
         Cli::passthru("mysqldump {$dbName} --routines=true"
             . " | pv -b -t -w 80 -N Export "
-            . " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' "
+            . (!$this->option('skip-filter') ? " | sed -e 's/DEFINER[ ]*=[ ]*[^*]*\*/\*/' | sed -e 's/ROW_FORMAT=FIXED//g' " : '')
             . " {$packCommand} > {$dumpPath}");
 
         $this->task(sprintf('DB %s exported', $dbName));
