@@ -145,6 +145,26 @@ _sage()
             opts="${opts} --magento-path --scope --scope-code"
             ;;
 
+            mailhog:install)
+            opts="${opts} "
+            ;;
+
+            mailhog:restart)
+            opts="${opts} "
+            ;;
+
+            mailhog:start)
+            opts="${opts} "
+            ;;
+
+            mailhog:stop)
+            opts="${opts} "
+            ;;
+
+            mailhog:uninstall)
+            opts="${opts} "
+            ;;
+
             mysql:install)
             opts="${opts} "
             ;;
@@ -185,6 +205,26 @@ _sage()
             opts="${opts} --skip --remote-autostart"
             ;;
 
+            rabbitmq:install)
+            opts="${opts} "
+            ;;
+
+            rabbitmq:restart)
+            opts="${opts} "
+            ;;
+
+            rabbitmq:start)
+            opts="${opts} "
+            ;;
+
+            rabbitmq:stop)
+            opts="${opts} "
+            ;;
+
+            rabbitmq:uninstall)
+            opts="${opts} "
+            ;;
+
             secure:generate)
             opts="${opts} "
             ;;
@@ -197,7 +237,15 @@ _sage()
             opts="${opts} "
             ;;
 
+            services:start)
+            opts="${opts} "
+            ;;
+
             services:status)
+            opts="${opts} "
+            ;;
+
+            services:stop)
             opts="${opts} "
             ;;
 
@@ -219,7 +267,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall m2:configure mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug secure:generate secure:install secure:revoke services:status site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

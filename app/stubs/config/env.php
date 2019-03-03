@@ -5,7 +5,9 @@ return [
         'dns',
         'apache',
         'mysql',
-        'elasticsearch'
+        'mailhog',
+        'elasticsearch',
+        'rabbitmq'
     ],
 
     'dns' => [
