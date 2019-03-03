@@ -75,6 +75,11 @@ return [
         'log_dir_path' => '/usr/local/var/log/elasticsearch/'
     ],
 
+    'mailhog' => [
+        'formula' => 'mailhog',
+        'log_path' => '/usr/local/var/log/mailhog.log'
+    ],
+
     'rabbitmq' => [
         'formula' => 'rabbitmq',
         'brew_config_dir_path' => '/usr/local/etc/rabbitmq',
