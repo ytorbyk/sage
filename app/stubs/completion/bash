@@ -70,11 +70,11 @@ _sage()
             ;;
 
             db:export)
-            opts="${opts} "
+            opts="${opts} --skip-filter"
             ;;
 
             db:import)
-            opts="${opts} "
+            opts="${opts} --skip-filter"
             ;;
 
             db:install)
