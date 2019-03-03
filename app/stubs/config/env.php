@@ -75,6 +75,13 @@ return [
         'log_dir_path' => '/usr/local/var/log/elasticsearch/'
     ],
 
+    'rabbitmq' => [
+        'formula' => 'rabbitmq',
+        'brew_config_dir_path' => '/usr/local/etc/rabbitmq',
+        'brew_lib_dir_path' => '/usr/local/var/lib/rabbitmq',
+        'log_dir_path' => '/usr/local/var/log/rabbitmq'
+    ],
+
     'secure' => [
         'formula' => 'openssl',
         'certificates_path' => config('env.home') . DIRECTORY_SEPARATOR . 'certificates',
