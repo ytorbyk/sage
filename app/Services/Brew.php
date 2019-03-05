@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -63,15 +65,15 @@ class Brew
     /**
      * @param string $formula
      * @param string[] $options
-     * @param string|null $tap
+     * @param array $tap
      * @return string
      *
      * @throws \DomainException
      */
-    public function install(string $formula, array $options = [], string $tap = null): string
+    public function install(string $formula, array $options = [], array $tap = null): string
     {
         if (!empty($tap)) {
-            $this->tap($tap);
+            $this->tap(... $tap);
         }
 
         try {

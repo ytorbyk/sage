@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                 if ($needInstall === true) {
                     /** @var Command $this */
                     $this->task(sprintf('Install [%s] Brew formula', $formula), function () use ($formula, $options, $tap) {
-                        BrewFacade::install($formula, $options, $tap);
+                        BrewFacade::install($formula, $options, (array)$tap);
                     });
                 }
                 return $needInstall === true;

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string unlink(string $formula)
  * @method static bool isInstalled(string $formula)
  * @method static bool ensureInstalled(string $formula, array $options = [], array $taps = [])
- * @method static string install(string $formula, array $options = [], string $taps = null)
+ * @method static string install(string $formula, array $options = [], array $taps = null)
  * @method static bool ensureUninstalled(string $formula, array $options = [])
  * @method static string uninstall(string $formula, array $options = [])
  * @method static void tap(string ... $formulas)

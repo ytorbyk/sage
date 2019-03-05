@@ -33,7 +33,7 @@ class CompletionCommand extends Command
                 $this->setupForBash();
                 break;
             default:
-                $this->error(sprintf('Wrong shell, currently supported: bash', $shell));
+                $this->error(sprintf('Wrong shell, currently supported: bash'));
                 return;
         }
 
