@@ -126,6 +126,7 @@ class Command extends \LaravelZero\Framework\Commands\Command
 
         $menuBuilder = new CliMenuBuilder;
         $menuBuilder->setTitle($title);
+        $menuBuilder->setWidth(110);
         $menuBuilder->setTitleSeparator('=');
         $menuBuilder->setForegroundColour('green');
         $menuBuilder->setBackgroundColour('black');
