@@ -65,7 +65,10 @@ class InstallCommand extends Command
         $phpTaps = config('env.php.taps');
         $taps = !empty($phpTaps[$phpVersion]) ? $phpTaps[$phpVersion] : null;
 
-        if ($this->installFormula(PhpHelper::getFormula($phpVersion), [], $taps)) {
+        $installOptions = config('env.php.install_options');
+        $options = !empty($installOptions[$phpVersion]) ? $installOptions[$phpVersion] : [];
+
+        if ($this->installFormula(PhpHelper::getFormula($phpVersion), $options, $taps)) {
             BrewService::stop(PhpHelper::getFormula($phpVersion));
         }
 

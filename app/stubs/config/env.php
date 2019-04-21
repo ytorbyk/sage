@@ -55,6 +55,10 @@ return [
             '5.6' => 'exolnet/homebrew-deprecated',
             '7.0' => 'exolnet/homebrew-deprecated'
         ],
+        'install_options' => [
+            '5.6' => ['--build-from-source'],
+            '7.0' => ['--build-from-source']
+        ],
         'versions' => [
             '5.6',
             '7.0',
