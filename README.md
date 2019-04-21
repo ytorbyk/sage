@@ -24,7 +24,7 @@ brew upgrade
 
 2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `$HOME/bin/bin` folder.
 ```bash
-curl -L https://github.com/ytorbyk/sage/releases/download/0.9.3/sage.phar > $HOME/bin/sage
+curl -L https://github.com/ytorbyk/sage/releases/download/0.9.4/sage.phar > $HOME/bin/sage
 chmod +x $HOME/bin/sage
 ```
 

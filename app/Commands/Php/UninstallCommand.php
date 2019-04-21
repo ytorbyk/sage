@@ -69,7 +69,11 @@ class UninstallCommand extends Command
         $this->uninstallPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
 
         $this->task('[ioncube] uninstall', function () {
-            IonCubeHelper::uninstall();
+            try {
+                IonCubeHelper::uninstall();
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
 
         $this->task(sprintf('Uninstall %s Brew formula', PhpHelper::getFormula($phpVersion)), function () use ($phpVersion) {
@@ -94,7 +98,11 @@ class UninstallCommand extends Command
         });
         if ($apcuInstalled === true) {
             $this->task(sprintf('[%s] uninstall', $extension), function () use ($phpVersion, $extension) {
-                PeclHelper::uninstall($extension, $phpVersion);
+                try {
+                    PeclHelper::uninstall($extension, $phpVersion);
+                } catch (\Exception $e) {
+                    return $e->getMessage();
+                }
             });
         }
     }
