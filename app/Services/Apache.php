@@ -131,7 +131,8 @@ class Apache
      */
     private function getConfPath(string $domain): string
     {
-        return config('env.apache.vhosts') . DIRECTORY_SEPARATOR . $domain . '.conf';
+        $configFilename = $domain === 'localhost' ? '00-default' : $domain;
+        return config('env.apache.vhosts') . DIRECTORY_SEPARATOR . $configFilename . '.conf';
     }
 
     /**
@@ -173,7 +174,8 @@ class Apache
     {
         $valetDir = config('env.apache.localhost_path');
         File::ensureDirExists($valetDir);
-        File::put($valetDir . '/index.php', '<?php' . PHP_EOL . "\t" . 'phpinfo();' . PHP_EOL);
+        File::put($valetDir . '/index.php', Stub::get('localhost/index.php'));
+        File::put($valetDir . '/no-entry.jpg', Stub::get('localhost/no-entry.jpg'));
 
         $this->configureVHost($valetDir, 'localhost', [], false);
     }
