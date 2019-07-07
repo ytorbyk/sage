@@ -12,6 +12,7 @@ use App\Commands\Php\InstallCommand as PhpInstall;
 use App\Commands\Php\SwitchCommand;
 use App\Commands\MailHog\InstallCommand as MailHogInstall;
 use App\Commands\ElasticSearch\InstallCommand as ElasticSearchInstall;
+use App\Commands\Kibana\InstallCommand as KibanaInstall;
 use App\Commands\RabbitMq\InstallCommand as RabbitMqInstall;
 use App\Commands\CompletionCommand as CompletionInstall;
 
@@ -64,6 +65,7 @@ class InstallCommand extends Command
 
         $this->call(MailHogInstall::COMMAND);
         $this->call(ElasticSearchInstall::COMMAND);
+        $this->call(KibanaInstall::COMMAND);
         $this->call(RabbitMqInstall::COMMAND);
 
         $this->call(CompletionInstall::COMMAND);

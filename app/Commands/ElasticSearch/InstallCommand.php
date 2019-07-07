@@ -48,10 +48,6 @@ class InstallCommand extends Command
         } else {
             $this->call(RestartCommand::COMMAND);
         }
-
-        $this->info('Install kibana:');
-        $this->installFormula(config('env.elasticsearch.kibana_formula'));
-        Brew::link(config('env.elasticsearch.kibana_formula'));
     }
 
     /**

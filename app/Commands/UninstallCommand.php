@@ -9,6 +9,7 @@ use App\Commands\Apache\UninstallCommand as ApacheUninstall;
 use App\Commands\Php\UninstallCommand as PhpUninstall;
 use App\Commands\MailHog\UninstallCommand as MailHogUninstall;
 use App\Commands\ElasticSearch\UninstallCommand as ElasticSearchUninstall;
+use App\Commands\Kibana\UninstallCommand as KibanaUninstall;
 use App\Commands\RabbitMq\UninstallCommand as RabbitMqUninstall;
 use App\Facades\Brew;
 use App\Facades\File;
@@ -45,6 +46,7 @@ class UninstallCommand extends Command
         $this->call(PhpUninstall::COMMAND);
         $this->call(MailHogUninstall::COMMAND);
         $this->call(ElasticSearchUninstall::COMMAND);
+        $this->call(KibanaUninstall::COMMAND);
         $this->call(RabbitMqUninstall::COMMAND);
 
         foreach (config('env.software') as $formula) {
