@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\RabbitMq;
 
 use App\Command;
+use App\Facades\ApacheHelper;
 
 class InstallCommand extends Command
 {
@@ -25,7 +28,8 @@ class InstallCommand extends Command
     {
         $this->info('Install RabbitMq:');
 
-        $needInstall = $this->installFormula(config('env.rabbitmq.formula'));
+        $needInstall = $this->installFormula((string)config('env.rabbitmq.formula'));
+        ApacheHelper::configureProxyVHost((string)config('env.rabbitmq.domain'), '15672');
 
         if ($needInstall) {
             $this->call(StartCommand::COMMAND);

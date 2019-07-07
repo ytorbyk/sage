@@ -5,6 +5,7 @@ namespace App\Commands\RabbitMq;
 use App\Command;
 use App\Facades\Brew;
 use App\Facades\File;
+use App\Facades\ApacheHelper;
 
 class UninstallCommand extends Command
 {
@@ -31,6 +32,8 @@ class UninstallCommand extends Command
             $this->call(StopCommand::COMMAND);
             $this->uninstallFormula(config('env.rabbitmq.formula'));
         }
+
+        ApacheHelper::deleteVHost((string)config('env.rabbitmq.domain'));
 
         $this->task('Delete RabbitMq Data', function () {
             $this->deleteData();
