@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static bool isStarted(string $service)
+ * @method static bool[] getServicesStatus()
  * @method static bool start(string $service, bool $root = false)
  * @method static void stop(string $service)
  * @method static void restart(string $service, bool $root = false)

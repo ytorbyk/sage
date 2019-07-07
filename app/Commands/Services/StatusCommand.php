@@ -29,9 +29,11 @@ class StatusCommand extends Command
         $services = config('env.services');
         $maxLength = max(array_map('strlen', $services)) + 1;
 
+        $servicesStatus = BrewService::getServicesStatus();
+
         $this->info('Services:');
         foreach ($services as $service) {
-            $isRunning = BrewService::isStarted((string)config(sprintf('env.%s.formula', $service)));
+            $isRunning = $servicesStatus[(string)config(sprintf('env.%s.formula', $service))] ?? false;
             $status = $isRunning ? $this->successText('running') : $this->errorText('stopped');
 
             $this->comment(sprintf("%-{$maxLength}s %s", $service . ':', $status));

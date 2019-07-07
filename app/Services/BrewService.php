@@ -24,6 +24,16 @@ class BrewService
     }
 
     /**
+     * @return bool[]
+     */
+    public function getServicesStatus(): array
+    {
+        return array_map(function ($serviceData) {
+            return $serviceData[self::SERVICE_STARTED] ?? false;
+        }, $this->getServices());
+    }
+
+    /**
      * @param string $service
      * @return array
      *
