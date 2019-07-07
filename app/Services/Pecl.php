@@ -9,6 +9,8 @@ use App\Facades\Cli;
 class Pecl
 {
     const XDEBUG_EXTENSION = 'xdebug';
+    const MEMCACHED_EXTENSION = 'memcached';
+    const IMAGICK_EXTENSION = 'imagick';
 
     const NORMAL_EXTENSION_TYPE = 'extension';
     const ZEND_EXTENSION_TYPE = 'zend_extension';
@@ -119,7 +121,7 @@ class Pecl
         $extensionVersion = $extensionVersion === null ? $extension : $extension . '-' . $extensionVersion;
 
         Cli::run("pecl uninstall -r $extension");
-        $result = Cli::run("pecl install $extensionVersion");
+        $result = Cli::run(sprintf('printf "\n" | pecl install %s', $extensionVersion));
 
         if (!preg_match("/Installing '(.*{$extension}.so)'/", $result)) {
             throw new \DomainException("Could not find installation path for: $extension\n\n$result");

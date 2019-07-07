@@ -11,6 +11,7 @@ use App\Facades\IonCubeHelper;
 use App\Facades\Stub;
 use App\Facades\File;
 use App\Services\Pecl;
+use App\Facades\SessionMemcached;
 
 class InstallCommand extends Command
 {
@@ -38,7 +39,10 @@ class InstallCommand extends Command
     {
         $phpVersions = config('env.php.versions');
 
-        Brew::ensureInstalled('autoconf');
+        foreach (config('env.php.dependencies') as $formula) {
+            Brew::ensureInstalled($formula);
+        }
+
         $this->setupSmtpCatcher();
 
         foreach ($phpVersions as $phpVersion) {
@@ -87,6 +91,12 @@ class InstallCommand extends Command
 
         $this->installPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
 
+        if ($phpVersion !== '5.6') {
+            $this->installPeclExtension($phpVersion, Pecl::IMAGICK_EXTENSION);
+            $this->installPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
+            SessionMemcached::configure();
+        }
+
         $this->installIonCube($phpVersion);
 
         $this->call(IoncubeCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
@@ -100,10 +110,10 @@ class InstallCommand extends Command
      */
     private function installPeclExtension(string $phpVersion, string $extension): void
     {
-        $apcuNeedInstall = $this->task(sprintf('[%s] need to be installed?', $extension), function () use ($phpVersion, $extension) {
+        $needInstall = $this->task(sprintf('[%s] need to be installed?', $extension), function () use ($phpVersion, $extension) {
             return !PeclHelper::isInstalled($extension) ?: 'Installed. Skip';
         });
-        if ($apcuNeedInstall === true) {
+        if ($needInstall === true) {
             $this->task(sprintf('[%s] install', $extension), function () use ($phpVersion, $extension) {
                 PeclHelper::install($extension, $phpVersion);
             });

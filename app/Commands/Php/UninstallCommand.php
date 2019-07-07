@@ -36,7 +36,9 @@ class UninstallCommand extends Command
             $this->uninstallVersion($phpVersion);
         }
 
-        Brew::ensureUninstalled('autoconf');
+        foreach (config('env.php.dependencies') as $formula) {
+            Brew::ensureUninstalled($formula);
+        }
 
         File::deleteDirectory(config('env.php.brew_etc_path'));
         File::deleteDirectory(config('env.php.brew_lib_path'));
@@ -55,7 +57,7 @@ class UninstallCommand extends Command
             }
         });
 
-        $isPhpInstalled = $this->task(sprintf('Need to be uninstalled?', $phpVersion), function () use ($phpVersion) {
+        $isPhpInstalled = $this->task(sprintf('Need to be uninstalled PHP v%s?', $phpVersion), function () use ($phpVersion) {
             return Brew::isInstalled(PhpHelper::getFormula($phpVersion)) ?: 'Uninstalled. Skip';
         });
         if ($isPhpInstalled !== true) {
@@ -67,6 +69,11 @@ class UninstallCommand extends Command
         });
 
         $this->uninstallPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
+
+        if ($phpVersion !== '5.6') {
+            $this->uninstallPeclExtension($phpVersion, Pecl::IMAGICK_EXTENSION);
+            $this->uninstallPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
+        }
 
         $this->task('[ioncube] uninstall', function () {
             try {

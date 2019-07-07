@@ -51,14 +51,20 @@ return [
         'brew_etc_path' => '/usr/local/etc/php',
         'brew_lib_path' => '/usr/local/lib/php',
         'brew_pear_path' => '/usr/local/share/pear',
+        'dependencies' => [
+            'autoconf',
+            'imagemagick',
+            'zlib',
+            'libmemcached',
+        ],
         'taps' => [
             '5.6' => 'exolnet/homebrew-deprecated',
             '7.0' => 'exolnet/homebrew-deprecated'
         ],
-        'install_options' => [
-            '5.6' => ['--build-from-source'],
-            '7.0' => ['--build-from-source']
-        ],
+        //'install_options' => [
+        //    '5.6' => ['--build-from-source'],
+        //    '7.0' => ['--build-from-source']
+        //],
         'versions' => [
             '5.6',
             '7.0',
