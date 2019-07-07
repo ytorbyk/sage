@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Apache;
 
 use App\Command;
@@ -25,7 +27,11 @@ class StopCommand extends Command
     public function handle(): void
     {
         $this->task('Apache Stop', function () {
-            BrewService::stop(config('env.apache.formula'));
+            try {
+                BrewService::stop((string)config('env.apache.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

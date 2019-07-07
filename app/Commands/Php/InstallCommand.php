@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Php;
 
 use App\Command;
@@ -50,7 +52,7 @@ class InstallCommand extends Command
             $this->installVersion($phpVersion);
         }
 
-        File::deleteDirectory(config('env.tmp_path'));
+        File::deleteDirectory((string)config('env.tmp_path'));
     }
 
     /**
@@ -193,8 +195,8 @@ class InstallCommand extends Command
      */
     private function setupSmtpCatcher()
     {
-        $mailDir = config('env.php.mail_path');
-        $smtpCatcherPath = config('env.php.smtp_catcher_files');
+        $mailDir = (string)config('env.php.mail_path');
+        $smtpCatcherPath = (string)config('env.php.smtp_catcher_files');
         File::ensureDirExists($mailDir);
 
         $smtpCatcher = Stub::get('php/smtp_catcher.php', [

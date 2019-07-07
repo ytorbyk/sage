@@ -27,7 +27,11 @@ class StartCommand extends Command
     public function handle(): void
     {
         $this->task('Kibana Start', function () {
-            BrewService::start((string)config('env.kibana.formula'));
+            try {
+                BrewService::start((string)config('env.kibana.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

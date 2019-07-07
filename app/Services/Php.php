@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use App\Facades\Brew;
@@ -26,11 +28,11 @@ class Php
      */
     public function getLinkedPhp(): ?string
     {
-        if (!File::isLink(config('env.php.brew_path'))) {
+        if (!File::isLink((string)config('env.php.brew_path'))) {
             return null;
         }
 
-        $resolvedPath = File::readLink(config('env.php.brew_path'));
+        $resolvedPath = File::readLink((string)config('env.php.brew_path'));
 
         foreach (config('env.php.versions') as $phpVersion) {
             if (strpos($resolvedPath, $phpVersion) !== false) {

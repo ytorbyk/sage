@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\DnsMasq;
 
 use App\Command;
@@ -27,7 +29,7 @@ class InstallCommand extends Command
     {
         $this->info('Install DnsMasq:');
 
-        $needInstall = $this->installFormula(config('env.dns.formula'));
+        $needInstall = $this->installFormula((string)config('env.dns.formula'));
 
         $this->task('Configure DnsMasq', function () {
             $this->configureDnsMasq();
@@ -45,7 +47,7 @@ class InstallCommand extends Command
      */
     private function configureDnsMasq(): void
     {
-        File::ensureDirExists(config('env.home'));
+        File::ensureDirExists((string)config('env.home'));
         $this->createCustomConfigFile();
         $domains = (array)config('env.dns.domains');
         $this->setConfig($domains);
@@ -60,7 +62,7 @@ class InstallCommand extends Command
         $customConfigPath = config('env.dns.config_path');
         if (!$this->customConfigIsImported($customConfigPath)) {
             File::put(
-                config('env.dns.brew_config_path'),
+                (string)config('env.dns.brew_config_path'),
                 'conf-file=' . $customConfigPath . PHP_EOL
             );
         }
@@ -72,7 +74,7 @@ class InstallCommand extends Command
      */
     private function customConfigIsImported($customConfigPath)
     {
-        return strpos(File::get(config('env.dns.brew_config_path')), $customConfigPath) !== false;
+        return strpos(File::get((string)config('env.dns.brew_config_path')), $customConfigPath) !== false;
     }
 
     /**
@@ -86,7 +88,7 @@ class InstallCommand extends Command
             $content .= 'address=/.' . $domain . '/127.0.0.1' . PHP_EOL;
         }
 
-        File::put(config('env.dns.config_path'), $content);
+        File::put((string)config('env.dns.config_path'), $content);
     }
 
     /**

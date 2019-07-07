@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\RabbitMq;
 
 use App\Command;
@@ -25,7 +27,11 @@ class StopCommand extends Command
     public function handle(): void
     {
         $this->task('RabbitMq Stop', function () {
-            BrewService::stop(config('env.rabbitmq.formula'));
+            try {
+                BrewService::stop((string)config('env.rabbitmq.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

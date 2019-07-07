@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands;
 
 use App\Command;
@@ -46,21 +48,21 @@ class CompletionCommand extends Command
     private function setupForBash(): void
     {
         $this->task(sprintf('Ensure [%s] installed', config('env.completion.formula')), function () {
-            Brew::ensureInstalled(config('env.completion.formula'));
+            Brew::ensureInstalled((string)config('env.completion.formula'));
         });
 
         $this->task('Copy completion script', function () {
             File::copy(
                 Stub::getPath('completion/bash'),
-                config('env.completion.brew_config_completion_path')
+                (string)config('env.completion.brew_config_completion_path')
             );
         });
 
         $this->task('Include Brew completion to Bash', function () {
 
-            $sourceText = config('env.completion.brew_completion');
-            $bashrcPath = config('env.completion.bashrc_path');
-            $bashProfilePath = config('env.completion.bash_profile_path');
+            $sourceText = (string)config('env.completion.brew_completion');
+            $bashrcPath = (string)config('env.completion.bashrc_path');
+            $bashProfilePath = (string)config('env.completion.bash_profile_path');
 
             if ((!File::exists($bashrcPath) || strpos(File::get($bashrcPath), $sourceText) === false)
                 && (!File::exists($bashProfilePath) || strpos(File::get($bashProfilePath), $sourceText) === false)

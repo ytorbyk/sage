@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Apache;
 
 use App\Command;
@@ -34,12 +36,12 @@ class InstallCommand extends Command
             Cli::runQuietly('sudo apachectl stop');
             Cli::runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
 
-            if (Brew::isInstalled(config('env.apache.formula'))) {
-                BrewService::stop(config('env.apache.formula'));
+            if (Brew::isInstalled((string)config('env.apache.formula'))) {
+                BrewService::stop((string)config('env.apache.formula'));
             }
         });
 
-        $this->installFormula(config('env.apache.formula'));
+        $this->installFormula((string)config('env.apache.formula'));
 
         $this->task('Configure Apache', function () {
             ApacheHelper::configure();

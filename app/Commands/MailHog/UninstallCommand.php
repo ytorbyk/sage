@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\MailHog;
 
 use App\Command;
@@ -28,9 +30,9 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall MailHog:');
 
-        if (Brew::isInstalled(config('env.mailhog.formula'))) {
+        if (Brew::isInstalled((string)config('env.mailhog.formula'))) {
             $this->call(StopCommand::COMMAND);
-            $this->uninstallFormula(config('env.mailhog.formula'));
+            $this->uninstallFormula((string)config('env.mailhog.formula'));
         }
 
         ApacheHelper::deleteVHost((string)config('env.mailhog.domain'));
@@ -45,6 +47,6 @@ class UninstallCommand extends Command
      */
     private function deleteData()
     {
-        File::deleteDirectory(config('env.mailhog.log_path'));
+        File::deleteDirectory((string)config('env.mailhog.log_path'));
     }
 }

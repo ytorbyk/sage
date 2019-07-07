@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\MySql;
 
 use App\Command;
@@ -27,7 +29,7 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall MySQL:');
 
-        $this->uninstallFormula(config('env.mysql.formula'));
+        $this->uninstallFormula((string)config('env.mysql.formula'));
 
         $this->task('Delete configuration', function () {
             File::delete(config('env.mysql.brew_config_path'));
@@ -35,7 +37,7 @@ class UninstallCommand extends Command
 
         if ($this->option('force')) {
             $this->task('Delete Data', function () {
-                File::deleteDirectory(config('env.mysql.data_dir_path'));
+                File::deleteDirectory((string)config('env.mysql.data_dir_path'));
             });
         }
     }

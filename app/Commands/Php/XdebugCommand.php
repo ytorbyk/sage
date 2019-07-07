@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Php;
 
 use App\Command;
@@ -47,7 +49,7 @@ class XdebugCommand extends Command
         $shouldApacheRestart = false;
 
         if ($action === 'on') {
-            $shouldApacheRestart = $this->enable($this->option('remote-autostart'));
+            $shouldApacheRestart = $this->enable((bool)$this->option('remote-autostart'));
         }
 
         if ($action === 'off') {

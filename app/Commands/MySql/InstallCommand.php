@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\MySql;
 
 use App\Command;
@@ -29,10 +31,10 @@ class InstallCommand extends Command
     {
         $this->info('Install MySQL:');
 
-        $needInstall = $this->installFormula(config('env.mysql.formula'));
+        $needInstall = $this->installFormula((string)config('env.mysql.formula'));
 
         $this->task(sprintf('Link [%s] formula', config('env.mysql.formula')), function () {
-            Brew::link(config('env.mysql.formula'));
+            Brew::link((string)config('env.mysql.formula'));
         });
 
         $this->task('Configure MySQL', function () {
@@ -52,15 +54,15 @@ class InstallCommand extends Command
      */
     private function configureMySQL(): void
     {
-        File::chmod(config('env.mysql.data_dir_path'), 0777);
+        File::chmod((string)config('env.mysql.data_dir_path'), 0777);
         $mysqlConfig = Stub::get(
             'my.cnf',
             [
-                'MYSQL_PASSWORD' => config('env.mysql.password'),
-                'LOGS_PATH' => config('env.logs_path')
+                'MYSQL_PASSWORD' => (string)config('env.mysql.password'),
+                'LOGS_PATH' => (string)config('env.logs_path')
             ]
         );
-        File::put(config('env.mysql.brew_config_path'), $mysqlConfig);
+        File::put((string)config('env.mysql.brew_config_path'), $mysqlConfig);
     }
 
     /**

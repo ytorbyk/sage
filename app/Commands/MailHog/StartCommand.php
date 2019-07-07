@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\MailHog;
 
 use App\Command;
@@ -25,7 +27,11 @@ class StartCommand extends Command
     public function handle(): void
     {
         $this->task('MailHog Start', function () {
-            BrewService::start(config('env.mailhog.formula'));
+            try {
+                BrewService::start((string)config('env.mailhog.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

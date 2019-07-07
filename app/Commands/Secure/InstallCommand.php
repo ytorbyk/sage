@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Secure;
 
 use App\Command;
@@ -26,10 +28,10 @@ class InstallCommand extends Command
     {
         $this->info('Install secure stuff:');
 
-        $this->installFormula(config('env.secure.formula'));
+        $this->installFormula((string)config('env.secure.formula'));
 
         $this->task('Ensure certificate directory created', function () {
-            File::ensureDirExists(config('env.secure.certificates_path'));
+            File::ensureDirExists((string)config('env.secure.certificates_path'));
         });
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\MySql;
 
 use App\Command;
@@ -25,7 +27,11 @@ class StartCommand extends Command
     public function handle(): void
     {
         $this->task('MySQL Start', function () {
-            BrewService::start(config('env.mysql.formula'));
+            try {
+                BrewService::start((string)config('env.mysql.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

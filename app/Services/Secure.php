@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use App\Facades\Cli;
@@ -79,7 +81,7 @@ class Secure
 
         $this->delete($domain);
 
-        File::ensureDirExists(config('env.secure.certificates_path'));
+        File::ensureDirExists((string)config('env.secure.certificates_path'));
 
         $this->buildCertificateConf($domain, $aliases);
         $this->createPrivateKey($domain);

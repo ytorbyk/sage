@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Database;
 
 use App\Command;
@@ -65,7 +67,7 @@ class ImportCommand extends Command
 
         $tmpFilePath = config('env.tmp_path') . DIRECTORY_SEPARATOR . 'dump.sql';
         if (!empty($this->fileType[$fileType])) {
-            File::ensureDirExists(config('env.tmp_path'));
+            File::ensureDirExists((string)config('env.tmp_path'));
             File::delete($tmpFilePath);
 
             Cli::passthru("{$this->fileType[$fileType]} {$dbPath} | pv -b -t -w 80 -N Unpack  > {$tmpFilePath}");
@@ -105,7 +107,7 @@ class ImportCommand extends Command
     private function getDumpList(): array
     {
         /** @var \Symfony\Component\Finder\SplFileInfo[] $files */
-        $files = File::files(config('env.db.dump_path'));
+        $files = File::files((string)config('env.db.dump_path'));
 
         $dumps = [];
         foreach ($files as $file) {

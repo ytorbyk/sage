@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands;
 
 use App\Command;
@@ -54,7 +56,7 @@ class UninstallCommand extends Command
         }
 
         if ($this->option('force')) {
-            File::deleteDirectory(config('env.home'));
+            File::deleteDirectory((string)config('env.home'));
             $this->uninstallCompletion();
         }
 
@@ -69,7 +71,7 @@ class UninstallCommand extends Command
         $this->info('Uninstall completion:');
 
         $this->task(sprintf('Uninstall [%s]', config('env.completion.formula')), function () {
-            Brew::ensureUninstalled(config('env.completion.formula'));
+            Brew::ensureUninstalled((string)config('env.completion.formula'));
         });
 
         $this->task('Delete completion script', function () {
@@ -77,14 +79,14 @@ class UninstallCommand extends Command
         });
 
         $this->task('Remove include Brew completion from Bash', function () {
-            $sourceText = config('env.completion.brew_completion');
+            $sourceText = (string)config('env.completion.brew_completion');
 
-            $bashrcPath = config('env.completion.bashrc_path');
+            $bashrcPath = (string)config('env.completion.bashrc_path');
             if (File::exists($bashrcPath)) {
                 File::put($bashrcPath, str_replace($sourceText, '', File::get($bashrcPath)));
             }
 
-            $bashProfilePath = config('env.completion.bash_profile_path');
+            $bashProfilePath = (string)config('env.completion.bash_profile_path');
             if (File::exists($bashProfilePath)) {
                 File::put($bashProfilePath, str_replace($sourceText, '', File::get($bashProfilePath)));
             }

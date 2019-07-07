@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\ElasticSearch;
 
 use App\Command;
@@ -29,8 +31,8 @@ class InstallCommand extends Command
 
         $this->ensureJavaInstalled();
 
-        $needInstall = $this->installFormula(config('env.elasticsearch.formula'));
-        Brew::link(config('env.elasticsearch.formula'));
+        $needInstall = $this->installFormula((string)config('env.elasticsearch.formula'));
+        Brew::link((string)config('env.elasticsearch.formula'));
 
         $this->info('Install plugins:');
         $installedPlugins = $this->getInstalledPlugins();

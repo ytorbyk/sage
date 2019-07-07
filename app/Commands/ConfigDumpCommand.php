@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands;
 
 use App\Command;
@@ -32,10 +34,10 @@ class ConfigDumpCommand extends Command
     public function handle(): void
     {
         $this->task('Ensure public home folder exists', function () {
-            File::ensureDirExists(config('env.home_public'));
+            File::ensureDirExists((string)config('env.home_public'));
         });
 
-        $this->writeConfig($this->option('skip-custom'));
+        $this->writeConfig((bool)$this->option('skip-custom'));
 
         $this->comment('Config dump: ' . $this->getConfigDumpPath());
         $this->info('The config will not be used.');

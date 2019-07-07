@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\ElasticSearch;
 
 use App\Command;
@@ -27,9 +29,9 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall ElasticSearch:');
 
-        if (Brew::isInstalled(config('env.elasticsearch.formula'))) {
+        if (Brew::isInstalled((string)config('env.elasticsearch.formula'))) {
             $this->call(StopCommand::COMMAND);
-            $this->uninstallFormula(config('env.elasticsearch.formula'));
+            $this->uninstallFormula((string)config('env.elasticsearch.formula'));
         }
 
         $this->task('Delete ElasticSearch Data', function () {
@@ -42,8 +44,8 @@ class UninstallCommand extends Command
      */
     private function deleteData()
     {
-        File::deleteDirectory(config('env.elasticsearch.brew_config_dir_path'));
-        File::deleteDirectory(config('env.elasticsearch.data_dir_path'));
-        File::deleteDirectory(config('env.elasticsearch.log_dir_path'));
+        File::deleteDirectory((string)config('env.elasticsearch.brew_config_dir_path'));
+        File::deleteDirectory((string)config('env.elasticsearch.data_dir_path'));
+        File::deleteDirectory((string)config('env.elasticsearch.log_dir_path'));
     }
 }

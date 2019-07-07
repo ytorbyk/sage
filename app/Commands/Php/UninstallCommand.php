@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Php;
 
 use App\Command;
@@ -40,8 +42,8 @@ class UninstallCommand extends Command
             Brew::ensureUninstalled($formula);
         }
 
-        File::deleteDirectory(config('env.php.brew_etc_path'));
-        File::deleteDirectory(config('env.php.brew_lib_path'));
+        File::deleteDirectory((string)config('env.php.brew_etc_path'));
+        File::deleteDirectory((string)config('env.php.brew_lib_path'));
     }
 
     /**

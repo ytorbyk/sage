@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use App\Facades\File;
@@ -106,7 +108,7 @@ class IonCube
             throw new \RuntimeException(sprintf('PHP v%s is not supported', $phpVersion));
         }
 
-        File::ensureDirExists(config('env.tmp_path'));
+        File::ensureDirExists((string)config('env.tmp_path'));
 
 
         $url = $this->setting[$phpVersion];

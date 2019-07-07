@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Apache;
 
 use App\Command;
@@ -25,7 +27,11 @@ class StartCommand extends Command
     public function handle(): void
     {
         $this->task('Apache Start', function () {
-            BrewService::start(config('env.apache.formula'), true);
+            try {
+                BrewService::start((string)config('env.apache.formula'), true);
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

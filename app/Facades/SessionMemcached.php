@@ -17,4 +17,11 @@ use Illuminate\Support\Facades\Facade;
  */
 class SessionMemcached extends Facade
 {
+    /**
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return 'session.memcached.helper';
+    }
 }

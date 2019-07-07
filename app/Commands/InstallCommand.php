@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands;
 
 use App\Command;
@@ -47,8 +49,8 @@ class InstallCommand extends Command
             return;
         }
 
-        File::ensureDirExists(config('env.home_public'));
-        File::ensureDirExists(config('env.logs_path'));
+        File::ensureDirExists((string)config('env.home_public'));
+        File::ensureDirExists((string)config('env.logs_path'));
 
         foreach (config('env.software') as $formula) {
             $this->installFormula($formula);

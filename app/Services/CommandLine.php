@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use Symfony\Component\Process\Process;
@@ -40,7 +42,7 @@ class CommandLine
      */
     private function runCommand(string $command): Process
     {
-        $process = new Process($command, null, null, null, 5400);
+        $process = new Process($command, null, null, null, 5400.);
         $process->run();
         return $process;
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Database;
 
 use App\Command;
@@ -26,16 +28,16 @@ class InstallCommand extends Command
     {
         $this->info('Install DB dump stuff:');
 
-        $this->installFormula(config('env.progress.formula'));
+        $this->installFormula((string)config('env.progress.formula'));
 
         $this->task('Ensure DB dumps directory created', function () {
-            File::ensureDirExists(config('env.db.dump_path'));
+            File::ensureDirExists((string)config('env.db.dump_path'));
         });
 
         $this->task('Setup Locale setting for Bash', function () {
 
-            $bashrcPath = config('env.completion.bashrc_path');
-            $bashProfilePath = config('env.completion.bash_profile_path');
+            $bashrcPath = (string)config('env.completion.bashrc_path');
+            $bashProfilePath = (string)config('env.completion.bash_profile_path');
 
             if ((!File::exists($bashrcPath) || strpos(File::get($bashrcPath), 'LC_ALL') === false)
                 && (!File::exists($bashProfilePath) || strpos(File::get($bashProfilePath), 'LC_ALL') === false)

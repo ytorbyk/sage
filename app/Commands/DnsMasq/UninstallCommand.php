@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\DnsMasq;
 
 use App\Command;
@@ -28,9 +30,9 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall DnsMasq:');
 
-        if (Brew::isInstalled(config('env.dns.formula'))) {
+        if (Brew::isInstalled((string)config('env.dns.formula'))) {
             $this->call(StopCommand::COMMAND);
-            $this->uninstallFormula(config('env.dns.formula'));
+            $this->uninstallFormula((string)config('env.dns.formula'));
         }
 
         $this->task('Delete DnsMasq config', function () {
@@ -45,6 +47,6 @@ class UninstallCommand extends Command
     {
         Cli::run(sprintf('sudo rm -rf %s', config('env.dns.resolver_path')));
         File::delete(config('env.dns.brew_config_path'));
-        File::deleteDirectory(config('env.dns.brew_config_dir_path'));
+        File::deleteDirectory((string)config('env.dns.brew_config_dir_path'));
     }
 }

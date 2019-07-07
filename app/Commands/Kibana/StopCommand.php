@@ -27,7 +27,11 @@ class StopCommand extends Command
     public function handle(): void
     {
         $this->task('Kibana Stop', function () {
-            BrewService::stop((string)config('env.kibana.formula'));
+            try {
+                BrewService::stop((string)config('env.kibana.formula'));
+            } catch (\Exception $e) {
+                return $e->getMessage();
+            }
         });
     }
 }

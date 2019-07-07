@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\RabbitMq;
 
 use App\Command;
@@ -28,9 +30,9 @@ class UninstallCommand extends Command
     {
         $this->info('Uninstall RabbitMq:');
 
-        if (Brew::isInstalled(config('env.rabbitmq.formula'))) {
+        if (Brew::isInstalled((string)config('env.rabbitmq.formula'))) {
             $this->call(StopCommand::COMMAND);
-            $this->uninstallFormula(config('env.rabbitmq.formula'));
+            $this->uninstallFormula((string)config('env.rabbitmq.formula'));
         }
 
         ApacheHelper::deleteVHost((string)config('env.rabbitmq.domain'));
@@ -45,8 +47,8 @@ class UninstallCommand extends Command
      */
     private function deleteData()
     {
-        File::deleteDirectory(config('env.rabbitmq.brew_config_dir_path'));
-        File::deleteDirectory(config('env.rabbitmq.brew_lib_dir_path'));
-        File::deleteDirectory(config('env.rabbitmq.log_dir_path'));
+        File::deleteDirectory((string)config('env.rabbitmq.brew_config_dir_path'));
+        File::deleteDirectory((string)config('env.rabbitmq.brew_lib_dir_path'));
+        File::deleteDirectory((string)config('env.rabbitmq.log_dir_path'));
     }
 }

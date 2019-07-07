@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Commands\Apache;
 
 use App\Command;
@@ -34,21 +36,21 @@ class UninstallCommand extends Command
             Cli::runQuietly('sudo apachectl stop');
             Cli::runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
 
-            if (Brew::isInstalled(config('env.apache.formula'))) {
-                BrewService::stop(config('env.apache.formula'));
+            if (Brew::isInstalled((string)config('env.apache.formula'))) {
+                BrewService::stop((string)config('env.apache.formula'));
             }
         });
 
-        $this->uninstallFormula(config('env.apache.formula'));
+        $this->uninstallFormula((string)config('env.apache.formula'));
 
         $this->task('Delete Apache configuration', function () {
-            File::delete(config('env.apache.config'));
-            File::deleteDirectory(config('env.apache.localhost_path'));
-            File::deleteDirectory(config('env.apache.brew_config_dir_path'));
+            File::delete((string)config('env.apache.config'));
+            File::deleteDirectory((string)config('env.apache.localhost_path'));
+            File::deleteDirectory((string)config('env.apache.brew_config_dir_path'));
         });
 
         if ($this->option('force')) {
-            File::deleteDirectory(config('env.apache.vhosts'));
+            File::deleteDirectory((string)config('env.apache.vhosts'));
         }
     }
 }
