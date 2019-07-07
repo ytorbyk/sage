@@ -13,6 +13,7 @@ use App\Commands\Php\SwitchCommand;
 use App\Commands\MailHog\InstallCommand as MailHogInstall;
 use App\Commands\ElasticSearch\InstallCommand as ElasticSearchInstall;
 use App\Commands\RabbitMq\InstallCommand as RabbitMqInstall;
+use App\Commands\CompletionCommand as CompletionInstall;
 
 use App\Facades\Brew;
 use App\Facades\File;
@@ -64,6 +65,8 @@ class InstallCommand extends Command
         $this->call(MailHogInstall::COMMAND);
         $this->call(ElasticSearchInstall::COMMAND);
         $this->call(RabbitMqInstall::COMMAND);
+
+        $this->call(CompletionInstall::COMMAND);
 
         $this->output->success(sprintf('%s is successfully installed and ready to use!', config('app.name')));
     }
