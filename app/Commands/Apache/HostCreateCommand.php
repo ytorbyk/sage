@@ -46,8 +46,8 @@ class HostCreateCommand extends Command
 
         $this->task('Create Apache Virtual Host', function () use ($hostPath, $secure) {
             ApacheHelper::configureVHost(
-                $hostPath,
                 $this->argument('domain'),
+                $hostPath,
                 $this->argument('aliases'),
                 $secure
             );

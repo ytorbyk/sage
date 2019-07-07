@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace App\Services;
 
 use App\Facades\Secure;
@@ -18,15 +20,43 @@ class Apache
     }
 
     /**
-     * @param string $documentRoot
      * @param string $domain
+     * @param string $documentRoot
      * @param string[] $aliases
      * @param bool $secure
      * @return void
      */
-    public function configureVHost(string $documentRoot, string $domain, array $aliases = [], bool $secure = true): void
+    public function configureVHost(string $domain, string $documentRoot, array $aliases = [], bool $secure = true): void
     {
-        File::ensureDirExists(config('env.apache.vhosts'));
+        $this->configureHost($domain, $documentRoot, '', $aliases, $secure);
+    }
+
+    /**
+     * @param string $domain
+     * @param string $port
+     * @param string[] $aliases
+     * @param bool $secure
+     * @return void
+     */
+    public function configureProxyVHost(string $domain, string $port, array $aliases = [], bool $secure = true): void
+    {
+        $this->configureHost($domain, '', $port, $aliases, $secure);
+    }
+
+    /**
+     * @param string $domain
+     * @param string $documentRoot
+     * @param string $port
+     * @param array $aliases
+     * @param bool $secure
+     * @return void
+     */
+    private function configureHost(string $domain, string $documentRoot = '', string $port = '', array $aliases = [], bool $secure = true)
+    {
+        $vhostTemplate = empty($documentRoot) && !empty($port) ? 'httpd-proxy-vhost.conf' : 'httpd-vhost.conf';
+        $sslVhostTemplate = empty($documentRoot) && !empty($port) ? 'httpd-proxy-vhost-ssl.conf' : 'httpd-vhost-ssl.conf';
+
+        File::ensureDirExists((string)config('env.apache.vhosts'));
         $this->deleteVHost($domain);
 
         $serverAliases = !empty($aliases)
@@ -36,11 +66,12 @@ class Apache
         $virtualHostSsl = '';
         if ($secure && Secure::canSecure($domain)) {
             $virtualHostSsl = Stub::get(
-                'httpd-vhost-ssl.conf',
+                $sslVhostTemplate,
                 [
                     'DOMAIN' => $domain,
                     'SERVER_ALIAS' => $serverAliases,
                     'DOCUMENT_ROOT' => $documentRoot,
+                    'PORT' => $port,
                     'LOGS_PATH' => config('env.logs_path'),
                     'CERTIFICATE_CRT' => Secure::getFilePath($domain, 'crt'),
                     'CERTIFICATE_KEY' => Secure::getFilePath($domain, 'key')
@@ -49,11 +80,12 @@ class Apache
         }
 
         $vhostConfig = Stub::get(
-            'httpd-vhost.conf',
+            $vhostTemplate,
             [
                 'DOMAIN' => $domain,
                 'SERVER_ALIAS' => $serverAliases,
                 'DOCUMENT_ROOT' => $documentRoot,
+                'PORT' => $port,
                 'LOGS_PATH' => config('env.logs_path'),
                 'VIRTUAL_HOST_SSL' => $virtualHostSsl,
             ]
@@ -66,11 +98,11 @@ class Apache
      */
     public function unlinkPhp(): void
     {
-        $config = File::get(config('env.apache.config'));
+        $config = File::get((string)config('env.apache.config'));
         foreach (config('env.php.versions') as $phpVersion) {
             $config = $this->removePhpVersion($config, $phpVersion);
         }
-        File::put(config('env.apache.config'), $config);
+        File::put((string)config('env.apache.config'), $config);
     }
 
     /**
@@ -81,7 +113,7 @@ class Apache
     {
         $this->unlinkPhp();
 
-        $config = File::get(config('env.apache.config'));
+        $config = File::get((string)config('env.apache.config'));
         $phpModuleHeader = config('env.apache.php_module_header') . PHP_EOL;
         if (strpos($config, $phpModuleHeader) === false) {
             throw new \RuntimeException('Apache config is broken');
@@ -89,7 +121,7 @@ class Apache
 
         $phpModuleLoad = $this->getPhpModuleLoad($version);
         $config = str_replace($phpModuleHeader, $phpModuleHeader . $phpModuleLoad . PHP_EOL, $config);
-        File::put(config('env.apache.config'), $config);
+        File::put((string)config('env.apache.config'), $config);
     }
 
     /**
@@ -140,8 +172,8 @@ class Apache
      */
     public function configure(): void
     {
-        File::ensureDirExists(config('env.apache.vhosts'));
-        File::ensureDirExists(config('env.logs_path'));
+        File::ensureDirExists((string)config('env.apache.vhosts'));
+        File::ensureDirExists((string)config('env.logs_path'));
 
         $apacheConfig = Stub::get(
             'httpd.conf',
@@ -152,7 +184,7 @@ class Apache
                 'LOGS_PATH' => config('env.logs_path'),
             ]
         );
-        File::put(config('env.apache.config'), $apacheConfig);
+        File::put((string)config('env.apache.config'), $apacheConfig);
         $this->includeToHttpdConfig();
     }
 
@@ -162,8 +194,8 @@ class Apache
     private function includeToHttpdConfig(): void
     {
         $includeConfig = sprintf('Include %s', config('env.apache.config'));
-        if (strpos(File::get(config('env.apache.brew_config_path')), $includeConfig) === false) {
-            File::append(config('env.apache.brew_config_path'), PHP_EOL . $includeConfig . PHP_EOL);
+        if (strpos(File::get((string)config('env.apache.brew_config_path')), $includeConfig) === false) {
+            File::append((string)config('env.apache.brew_config_path'), PHP_EOL . $includeConfig . PHP_EOL);
         }
     }
 
@@ -172,11 +204,11 @@ class Apache
      */
     public function initDefaultLocalhostVHost()
     {
-        $valetDir = config('env.apache.localhost_path');
+        $valetDir = (string)config('env.apache.localhost_path');
         File::ensureDirExists($valetDir);
         File::put($valetDir . '/index.php', Stub::get('localhost/index.php'));
         File::put($valetDir . '/no-entry.jpg', Stub::get('localhost/no-entry.jpg'));
 
-        $this->configureVHost($valetDir, 'localhost', [], false);
+        $this->configureVHost('localhost', $valetDir, [], false);
     }
 }

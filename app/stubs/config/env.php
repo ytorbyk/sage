@@ -7,6 +7,7 @@ return [
         'mysql',
         'mailhog',
         'elasticsearch',
+        'kibana',
         'rabbitmq'
     ],
 
@@ -80,7 +81,6 @@ return [
 
     'elasticsearch' => [
         'formula' => 'elasticsearch@5.6',
-        'kibana_formula' => 'kibana@5.6',
         'plugins' => [
             'analysis-phonetic',
             'analysis-icu'
@@ -90,13 +90,20 @@ return [
         'log_dir_path' => '/usr/local/var/log/elasticsearch/'
     ],
 
+    'kibana' => [
+        'formula' => 'kibana@5.6',
+        'domain' => 'kibana.test'
+    ],
+
     'mailhog' => [
         'formula' => 'mailhog',
+        'domain' => 'mailhog.test',
         'log_path' => '/usr/local/var/log/mailhog.log'
     ],
 
     'rabbitmq' => [
         'formula' => 'rabbitmq',
+        'domain' => 'rabbitmq.test',
         'brew_config_dir_path' => '/usr/local/etc/rabbitmq',
         'brew_lib_dir_path' => '/usr/local/var/lib/rabbitmq',
         'log_dir_path' => '/usr/local/var/log/rabbitmq'

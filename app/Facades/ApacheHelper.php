@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static void configure()
  * @method static void initDefaultLocalhostVHost()
- * @method static void configureVHost(string $documentRoot, string $domain, array $aliases = [], bool $secure = true)
+ * @method static void configureVHost(string $domain, string $documentRoot, array $aliases = [], bool $secure = true)
+ * @method static void configureProxyVHost(string $domain, string $port, array $aliases = [], bool $secure = true)
  * @method static void deleteVHost(string $domain)
  * @method static void linkPhp(string $version)
  * @method static void unlinkPhp()
