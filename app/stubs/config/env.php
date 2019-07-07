@@ -74,6 +74,7 @@ return [
 
     'elasticsearch' => [
         'formula' => 'elasticsearch@5.6',
+        'kibana_formula' => 'kibana@5.6',
         'plugins' => [
             'analysis-phonetic',
             'analysis-icu'

@@ -30,7 +30,6 @@ class InstallCommand extends Command
         $this->ensureJavaInstalled();
 
         $needInstall = $this->installFormula(config('env.elasticsearch.formula'));
-
         Brew::link(config('env.elasticsearch.formula'));
 
         $this->info('Install plugins:');
@@ -49,6 +48,10 @@ class InstallCommand extends Command
         } else {
             $this->call(RestartCommand::COMMAND);
         }
+
+        $this->info('Install kibana:');
+        $this->installFormula(config('env.elasticsearch.kibana_formula'));
+        Brew::link(config('env.elasticsearch.kibana_formula'));
     }
 
     /**
@@ -62,8 +65,9 @@ class InstallCommand extends Command
             return (!empty($javaVersion) && strpos($javaVersion, 'No Java') === false) ? $javaVersion . '. Skip' : false;
         });
 
-        if (!$javaVersion) {
-            Cli::passthru('brew cask install homebrew/cask-versions/java8');
+        if (strpos($javaVersion, '1.8') !== 0) {
+            Brew::tap('homebrew/cask', 'homebrew/cask-versions');
+            Cli::passthru('brew cask install caskroom/versions/adoptopenjdk8');
         }
     }
 
