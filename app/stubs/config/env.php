@@ -5,6 +5,7 @@ return [
         'dns',
         'apache',
         'mysql',
+        'redis',
         'mailhog',
         'elasticsearch',
         'kibana',
@@ -107,6 +108,10 @@ return [
         'brew_config_dir_path' => '/usr/local/etc/rabbitmq',
         'brew_lib_dir_path' => '/usr/local/var/lib/rabbitmq',
         'log_dir_path' => '/usr/local/var/log/rabbitmq'
+    ],
+
+    'redis' => [
+        'formula' => 'redis'
     ],
 
     'secure' => [
