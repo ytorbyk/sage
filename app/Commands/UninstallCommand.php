@@ -9,6 +9,7 @@ use App\Commands\DnsMasq\UninstallCommand as DnsMasqUninstall;
 use App\Commands\MySql\UninstallCommand as MySqlUninstall;
 use App\Commands\Apache\UninstallCommand as ApacheUninstall;
 use App\Commands\Php\UninstallCommand as PhpUninstall;
+use App\Commands\Memcached\UninstallCommand as MemcachedUninstall;
 use App\Commands\MailHog\UninstallCommand as MailHogUninstall;
 use App\Commands\ElasticSearch\UninstallCommand as ElasticSearchUninstall;
 use App\Commands\Kibana\UninstallCommand as KibanaUninstall;
@@ -46,6 +47,7 @@ class UninstallCommand extends Command
         $this->call(MySqlUninstall::COMMAND, ['--force' => $this->option('force')]);
         $this->call(ApacheUninstall::COMMAND, ['--force' => $this->option('force')]);
         $this->call(PhpUninstall::COMMAND);
+        $this->call(MemcachedUninstall::COMMAND);
         $this->call(MailHogUninstall::COMMAND);
         $this->call(ElasticSearchUninstall::COMMAND);
         $this->call(KibanaUninstall::COMMAND);

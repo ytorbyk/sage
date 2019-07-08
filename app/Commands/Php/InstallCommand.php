@@ -14,6 +14,7 @@ use App\Facades\Stub;
 use App\Facades\File;
 use App\Services\Pecl;
 use App\Facades\SessionMemcached;
+use App\Commands\Memcached\InstallCommand as MemcachedInstall;
 
 class InstallCommand extends Command
 {
@@ -39,6 +40,8 @@ class InstallCommand extends Command
      */
     public function handle(): void
     {
+        $this->call(MemcachedInstall::COMMAND);
+
         $phpVersions = config('env.php.versions');
 
         foreach (config('env.php.dependencies') as $formula) {

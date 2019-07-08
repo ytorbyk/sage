@@ -5,6 +5,7 @@ return [
         'dns',
         'apache',
         'mysql',
+        'memcached',
         'redis',
         'mailhog',
         'elasticsearch',
@@ -78,6 +79,10 @@ return [
         'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
         'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
         'smtp_catcher_files' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
+    ],
+
+    'memcached' => [
+        'formula' => 'memcached',
     ],
 
     'elasticsearch' => [

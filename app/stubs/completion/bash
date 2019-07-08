@@ -193,10 +193,6 @@ _sage()
             opts="${opts} --skip"
             ;;
 
-            php:session:memcached)
-            opts="${opts} --skip"
-            ;;
-
             php:switch)
             opts="${opts} --skip"
             ;;
@@ -271,7 +267,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:session:memcached php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
@@ -281,4 +277,3 @@ _sage()
 }
 
 complete -o default -F _sage sage
-complete -o default -F _sage sage.phar
