@@ -56,6 +56,7 @@ return [
         'brew_pear_path' => '/usr/local/share/pear',
         'dependencies' => [
             'autoconf',
+            'pkg-config',
             'imagemagick',
             'zlib',
         ],
