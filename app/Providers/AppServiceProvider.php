@@ -20,6 +20,7 @@ use App\Services\BrewService;
 use App\Services\Secure;
 use App\Services\Apache;
 use App\Services\Php;
+use App\Services\MemcachedSession;
 use App\Services\Pecl;
 use App\Services\IonCube;
 
@@ -143,6 +144,10 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind('php.helper', function () {
             return new Php;
+        });
+
+        $this->app->bind('memcached.session', function () {
+            return new MemcachedSession;
         });
 
         $this->app->bind('pecl.helper', function () {

@@ -13,7 +13,7 @@ use App\Facades\IonCubeHelper;
 use App\Facades\Stub;
 use App\Facades\File;
 use App\Services\Pecl;
-use App\Facades\SessionMemcached;
+use App\Facades\MemcachedSession;
 use App\Commands\Memcached\InstallCommand as MemcachedInstall;
 
 class InstallCommand extends Command
@@ -99,7 +99,7 @@ class InstallCommand extends Command
         if ($phpVersion !== '5.6') {
             $this->installPeclExtension($phpVersion, Pecl::IMAGICK_EXTENSION);
             $this->installPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
-            SessionMemcached::configure();
+            MemcachedSession::configure();
         }
 
         $this->installIonCube($phpVersion);

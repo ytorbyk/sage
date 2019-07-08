@@ -8,7 +8,7 @@ use App\Facades\File;
 use App\Facades\PeclHelper;
 use App\Facades\Stub;
 
-class SessionMemcached
+class MemcachedSession
 {
     /**
      * @return bool

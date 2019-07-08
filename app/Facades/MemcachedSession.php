@@ -13,15 +13,15 @@ use Illuminate\Support\Facades\Facade;
  * @method static void disable()
  * @method static void configure()
  *
- * @see \App\Commands\Php\SessionMemcachedCommand
+ * @see \App\Services\MemcachedSession
  */
-class SessionMemcached extends Facade
+class MemcachedSession extends Facade
 {
     /**
      * @return string
      */
     protected static function getFacadeAccessor()
     {
-        return 'session.memcached.helper';
+        return 'memcached.session';
     }
 }

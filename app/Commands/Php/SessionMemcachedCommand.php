@@ -6,9 +6,9 @@ namespace App\Commands\Php;
 
 use App\Command;
 use App\Commands\Apache\RestartCommand;
-use App\Facades\SessionMemcached;
+use App\Facades\MemcachedSession;
 
-class SessionMemcachedCommand extends Command
+class MemcachedSessionCommand extends Command
 {
     const COMMAND = 'php:session:memcached';
 
@@ -64,18 +64,18 @@ class SessionMemcachedCommand extends Command
      */
     private function enable(): bool
     {
-        if (!SessionMemcached::isInstalled()) {
+        if (!MemcachedSession::isInstalled()) {
             $this->warn('Memcached is not installed');
             return false;
         }
 
-        if (SessionMemcached::isEnabled()) {
+        if (MemcachedSession::isEnabled()) {
             $this->warn('Memcached as session storage is already enabled');
             return false;
         }
 
         $this->task('Memcached as session storage enable', function () {
-            SessionMemcached::enable();
+            MemcachedSession::enable();
         });
         return true;
     }
@@ -85,13 +85,13 @@ class SessionMemcachedCommand extends Command
      */
     private function disable(): bool
     {
-        if (!SessionMemcached::isEnabled()) {
+        if (!MemcachedSession::isEnabled()) {
             $this->warn('Memcached as session storage is already disabled');
             return false;
         }
 
         $this->task('Memcached as session storage disable', function () {
-            SessionMemcached::disable();
+            MemcachedSession::disable();
         });
         return true;
     }
@@ -101,7 +101,7 @@ class SessionMemcachedCommand extends Command
      */
     private function getAction(): ?string
     {
-        if (SessionMemcached::isEnabled()) {
+        if (MemcachedSession::isEnabled()) {
             $action = 'off';
             $confirm = 'Memcached as session storage is enabled, do you want to disable?';
         } else {
