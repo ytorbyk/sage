@@ -61,6 +61,18 @@ _sage()
             opts="${opts} --force"
             ;;
 
+            app:build)
+            opts="${opts} --timeout"
+            ;;
+
+            app:install)
+            opts="${opts} "
+            ;;
+
+            app:rename)
+            opts="${opts} "
+            ;;
+
             db:create)
             opts="${opts} --force"
             ;;
@@ -185,6 +197,10 @@ _sage()
             opts="${opts} "
             ;;
 
+            make:command)
+            opts="${opts} --command"
+            ;;
+
             memcached:flush)
             opts="${opts} "
             ;;
@@ -195,6 +211,10 @@ _sage()
 
             memcached:restart)
             opts="${opts} "
+            ;;
+
+            memcached:session)
+            opts="${opts} --skip"
             ;;
 
             memcached:start)
@@ -335,7 +355,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall kibana:install kibana:restart kibana:start kibana:stop kibana:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall memcached:flush memcached:install memcached:restart memcached:start memcached:stop memcached:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall redis:flush redis:install redis:restart redis:start redis:stop redis:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall app:build app:install app:rename db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall kibana:install kibana:restart kibana:start kibana:stop kibana:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall make:command memcached:flush memcached:install memcached:restart memcached:session memcached:start memcached:stop memcached:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall redis:flush redis:install redis:restart redis:start redis:stop redis:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"

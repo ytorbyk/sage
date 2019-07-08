@@ -2,15 +2,15 @@
 
 declare(strict_types = 1);
 
-namespace App\Commands\Php;
+namespace App\Commands\Memcached;
 
 use App\Command;
 use App\Commands\Apache\RestartCommand;
 use App\Facades\MemcachedSession;
 
-class MemcachedSessionCommand extends Command
+class SessionCommand extends Command
 {
-    const COMMAND = 'php:session:memcached';
+    const COMMAND = 'memcached:session';
 
     /**
      * @var string
