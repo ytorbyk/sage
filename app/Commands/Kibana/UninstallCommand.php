@@ -27,7 +27,7 @@ class UninstallCommand extends Command
      */
     public function handle(): void
     {
-        $this->info('Uninstall RabbitMq:');
+        $this->info('Uninstall Kibana:');
 
         if (Brew::isInstalled((string)config('env.kibana.formula'))) {
             $this->call(StopCommand::COMMAND);

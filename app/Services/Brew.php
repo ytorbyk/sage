@@ -41,7 +41,7 @@ class Brew
      */
     public function isInstalled(string $formula): bool
     {
-        return in_array($formula, explode(PHP_EOL, Cli::runQuietly('brew list | grep ' . $formula)));
+        return in_array($formula, explode(PHP_EOL, Cli::runQuietly('brew list | grep ' . $formula)), true);
     }
 
     /**
@@ -90,7 +90,7 @@ class Brew
      */
     public function ensureUninstalled(string $formula, array $options = []): bool
     {
-        if ($this->isInstalled($formula)) {
+        if (!$this->isInstalled($formula)) {
             return false;
         }
 

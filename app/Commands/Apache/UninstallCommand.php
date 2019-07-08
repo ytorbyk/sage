@@ -37,7 +37,11 @@ class UninstallCommand extends Command
             Cli::runQuietly('sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist');
 
             if (Brew::isInstalled((string)config('env.apache.formula'))) {
-                BrewService::stop((string)config('env.apache.formula'));
+                try {
+                    BrewService::stop((string)config('env.apache.formula'));
+                } catch (\Exception $e) {
+                    return $e->getMessage();
+                }
             }
         });
 
