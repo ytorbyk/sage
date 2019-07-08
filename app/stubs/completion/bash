@@ -141,6 +141,26 @@ _sage()
             opts="${opts} --force"
             ;;
 
+            kibana:install)
+            opts="${opts} "
+            ;;
+
+            kibana:restart)
+            opts="${opts} "
+            ;;
+
+            kibana:start)
+            opts="${opts} "
+            ;;
+
+            kibana:stop)
+            opts="${opts} "
+            ;;
+
+            kibana:uninstall)
+            opts="${opts} "
+            ;;
+
             m2:configure)
             opts="${opts} --magento-path --scope --scope-code"
             ;;
@@ -162,6 +182,30 @@ _sage()
             ;;
 
             mailhog:uninstall)
+            opts="${opts} "
+            ;;
+
+            memcached:flush)
+            opts="${opts} "
+            ;;
+
+            memcached:install)
+            opts="${opts} "
+            ;;
+
+            memcached:restart)
+            opts="${opts} "
+            ;;
+
+            memcached:start)
+            opts="${opts} "
+            ;;
+
+            memcached:stop)
+            opts="${opts} "
+            ;;
+
+            memcached:uninstall)
             opts="${opts} "
             ;;
 
@@ -225,6 +269,30 @@ _sage()
             opts="${opts} "
             ;;
 
+            redis:flush)
+            opts="${opts} "
+            ;;
+
+            redis:install)
+            opts="${opts} "
+            ;;
+
+            redis:restart)
+            opts="${opts} "
+            ;;
+
+            redis:start)
+            opts="${opts} "
+            ;;
+
+            redis:stop)
+            opts="${opts} "
+            ;;
+
+            redis:uninstall)
+            opts="${opts} "
+            ;;
+
             secure:generate)
             opts="${opts} "
             ;;
@@ -267,7 +335,7 @@ _sage()
 
     # completing for a command
     if [[ $cur == $com ]]; then
-        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
+        coms="help list apache:host apache:host-revoke apache:install apache:restart apache:start apache:stop apache:uninstall db:create db:drop db:export db:import db:install db:list dns:install dns:restart dns:start dns:stop dns:uninstall elasticsearch:install elasticsearch:restart elasticsearch:start elasticsearch:stop elasticsearch:uninstall env:completion env:config-dump env:install env:uninstall kibana:install kibana:restart kibana:start kibana:stop kibana:uninstall m2:configure mailhog:install mailhog:restart mailhog:start mailhog:stop mailhog:uninstall memcached:flush memcached:install memcached:restart memcached:start memcached:stop memcached:uninstall mysql:install mysql:restart mysql:start mysql:stop mysql:uninstall php:install php:ioncube php:switch php:uninstall php:xdebug rabbitmq:install rabbitmq:restart rabbitmq:start rabbitmq:stop rabbitmq:uninstall redis:flush redis:install redis:restart redis:start redis:stop redis:uninstall secure:generate secure:install secure:revoke services:start services:status services:stop site:link site:unlink"
 
         COMPREPLY=($(compgen -W "${coms}" -- ${cur}))
         __ltrim_colon_completions "$cur"
