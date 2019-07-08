@@ -12,6 +12,7 @@ use App\Commands\Apache\InstallCommand as ApacheInstall;
 use App\Commands\Secure\InstallCommand as SecureInstall;
 use App\Commands\Php\InstallCommand as PhpInstall;
 use App\Commands\Php\SwitchCommand;
+use App\Commands\Redis\InstallCommand as RedisInstall;
 use App\Commands\MailHog\InstallCommand as MailHogInstall;
 use App\Commands\ElasticSearch\InstallCommand as ElasticSearchInstall;
 use App\Commands\Kibana\InstallCommand as KibanaInstall;
@@ -65,6 +66,7 @@ class InstallCommand extends Command
 
         $this->call(SwitchCommand::COMMAND, ['version' => '7.1']);
 
+        $this->call(RedisInstall::COMMAND);
         $this->call(MailHogInstall::COMMAND);
         $this->call(ElasticSearchInstall::COMMAND);
         $this->call(KibanaInstall::COMMAND);
