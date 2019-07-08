@@ -58,7 +58,6 @@ return [
             'autoconf',
             'imagemagick',
             'zlib',
-            'libmemcached',
         ],
         'taps' => [
             '5.6' => 'exolnet/homebrew-deprecated',
@@ -83,6 +82,9 @@ return [
 
     'memcached' => [
         'formula' => 'memcached',
+        'dependencies' => [
+            'libmemcached',
+        ]
     ],
 
     'elasticsearch' => [

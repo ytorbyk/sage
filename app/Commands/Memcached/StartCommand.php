@@ -26,7 +26,7 @@ class StartCommand extends Command
      */
     public function handle(): void
     {
-        $this->task('Redis Start', function () {
+        $this->task('Memcached Start', function () {
             try {
                 BrewService::start((string)config('env.memcached.formula'));
             } catch (\Exception $e) {

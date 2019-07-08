@@ -26,7 +26,11 @@ class UninstallCommand extends Command
      */
     public function handle(): void
     {
-        $this->info('Uninstall Redis:');
+        $this->info('Uninstall Memcached:');
+
+        foreach (config('env.memcached.dependencies') as $formula) {
+            Brew::ensureUninstalled($formula);
+        }
 
         if (Brew::isInstalled((string)config('env.memcached.formula'))) {
             $this->call(StopCommand::COMMAND);

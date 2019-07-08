@@ -32,14 +32,14 @@ class UninstallCommand extends Command
      */
     public function handle(): void
     {
+        foreach (config('env.php.dependencies') as $formula) {
+            Brew::ensureUninstalled($formula);
+        }
+
         $phpVersions = config('env.php.versions');
         foreach ($phpVersions as $phpVersion) {
             $this->info(sprintf('Uninstall PHP v%s', $phpVersion));
             $this->uninstallVersion($phpVersion);
-        }
-
-        foreach (config('env.php.dependencies') as $formula) {
-            Brew::ensureUninstalled($formula);
         }
 
         File::deleteDirectory((string)config('env.php.brew_etc_path'));
