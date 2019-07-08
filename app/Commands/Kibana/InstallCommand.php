@@ -7,6 +7,7 @@ namespace App\Commands\Kibana;
 use App\Command;
 use App\Facades\Brew;
 use App\Facades\ApacheHelper;
+use App\Facades\Secure;
 
 class InstallCommand extends Command
 {
@@ -31,6 +32,8 @@ class InstallCommand extends Command
 
         $needInstall = $this->installFormula((string)config('env.kibana.formula'));
         Brew::link((string)config('env.kibana.formula'));
+
+        Secure::generate((string)config('env.kibana.domain'));
         ApacheHelper::configureProxyVHost((string)config('env.kibana.domain'), '5601');
 
         if ($needInstall) {

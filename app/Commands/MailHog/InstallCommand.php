@@ -6,6 +6,7 @@ namespace App\Commands\MailHog;
 
 use App\Command;
 use App\Facades\ApacheHelper;
+use App\Facades\Secure;
 
 class InstallCommand extends Command
 {
@@ -29,6 +30,8 @@ class InstallCommand extends Command
         $this->info('Install MailHog:');
 
         $needInstall = $this->installFormula((string)config('env.mailhog.formula'));
+
+        Secure::generate((string)config('env.mailhog.domain'));
         ApacheHelper::configureProxyVHost((string)config('env.mailhog.domain'), '8025');
 
         if ($needInstall) {

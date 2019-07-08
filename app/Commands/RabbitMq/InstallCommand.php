@@ -6,6 +6,7 @@ namespace App\Commands\RabbitMq;
 
 use App\Command;
 use App\Facades\ApacheHelper;
+use App\Facades\Secure;
 
 class InstallCommand extends Command
 {
@@ -29,6 +30,8 @@ class InstallCommand extends Command
         $this->info('Install RabbitMq:');
 
         $needInstall = $this->installFormula((string)config('env.rabbitmq.formula'));
+
+        Secure::generate((string)config('env.rabbitmq.domain'));
         ApacheHelper::configureProxyVHost((string)config('env.rabbitmq.domain'), '15672');
 
         if ($needInstall) {

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void delete(string $domain)
  * @method static string getFilePath(string $domain, string $fileType)
  *
- * @see \App\Services\Stubs
+ * @see \App\Services\Secure
  */
 class Secure extends Facade
 {
