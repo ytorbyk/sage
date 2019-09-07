@@ -39,5 +39,7 @@ class InstallCommand extends Command
         } else {
             $this->call(RestartCommand::COMMAND);
         }
+
+        $this->call(SessionCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
     }
 }
