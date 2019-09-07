@@ -64,10 +64,6 @@ return [
             '5.6' => 'exolnet/homebrew-deprecated',
             '7.0' => 'exolnet/homebrew-deprecated'
         ],
-        //'install_options' => [
-        //    '5.6' => ['--build-from-source'],
-        //    '7.0' => ['--build-from-source']
-        //],
         'versions' => [
             '5.6',
             '7.0',
@@ -75,7 +71,7 @@ return [
             '7.2',
             '7.3'
         ],
-        'smtp_catcher' => 'mailhog',
+        'smtp_catcher' => 'files',
         'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
         'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
         'smtp_catcher_files' => config('env.home') . DIRECTORY_SEPARATOR . 'smtp_catcher.php',
