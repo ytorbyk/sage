@@ -28,18 +28,10 @@ class InstallCommand extends Command
     {
         $this->info('Install Memcached:');
 
-        $needInstall = $this->installFormula((string)config('env.memcached.formula'));
+        $this->installFormula((string)config('env.memcached.formula'));
 
         foreach (config('env.memcached.dependencies') as $formula) {
             Brew::ensureInstalled($formula);
         }
-
-        if ($needInstall) {
-            $this->call(StartCommand::COMMAND);
-        } else {
-            $this->call(RestartCommand::COMMAND);
-        }
-
-        $this->call(SessionCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
     }
 }

@@ -14,7 +14,9 @@ use App\Facades\Stub;
 use App\Facades\File;
 use App\Services\Pecl;
 use App\Facades\MemcachedSession;
-use App\Commands\Memcached\InstallCommand as MemcachedInstall;
+use App\Commands\Memcached\InstallCommand as MemcachedInstallCommand;
+use App\Commands\Memcached\StartCommand as MemcachedStartCommand;
+use App\Commands\Memcached\SessionCommand as MemcachedSessionCommand;
 
 class InstallCommand extends Command
 {
@@ -40,7 +42,7 @@ class InstallCommand extends Command
      */
     public function handle(): void
     {
-        $this->call(MemcachedInstall::COMMAND);
+        $this->call(MemcachedInstallCommand::COMMAND);
 
         $phpVersions = config('env.php.versions');
 
@@ -54,6 +56,8 @@ class InstallCommand extends Command
             $this->info(sprintf('Install PHP v%s', $phpVersion));
             $this->installVersion($phpVersion);
         }
+
+        $this->call(MemcachedStartCommand::COMMAND);
 
         File::deleteDirectory((string)config('env.tmp_path'));
     }
@@ -104,6 +108,7 @@ class InstallCommand extends Command
 
         $this->installIonCube($phpVersion);
 
+        $this->call(MemcachedSessionCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
         $this->call(IoncubeCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
         $this->call(XdebugCommand::COMMAND, ['action' => 'off', '--skip' => 1]);
     }
