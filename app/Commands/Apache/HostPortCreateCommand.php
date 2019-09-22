@@ -11,7 +11,7 @@ use App\Facades\ApacheHelper;
 
 class HostPortCreateCommand extends Command
 {
-    const COMMAND = 'apache:host-proxy';
+    const COMMAND = 'apache:proxy:host';
 
     /**
      * @var string

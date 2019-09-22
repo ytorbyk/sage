@@ -10,7 +10,7 @@ use App\Commands\Apache\RestartCommand;
 
 class LinkProxyCommand extends Command
 {
-    const COMMAND = 'site:link-proxy';
+    const COMMAND = 'site:proxy:link';
 
     /**
      * @var string
