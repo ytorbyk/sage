@@ -65,7 +65,7 @@ class InstallCommand extends Command
 
         if (strpos($javaVersion, '1.8') !== 0) {
             Brew::tap('homebrew/cask', 'homebrew/cask-versions');
-            Cli::passthru('brew cask install caskroom/versions/adoptopenjdk8');
+            Cli::passthru('brew cask install homebrew/cask-versions/adoptopenjdk8');
         }
     }
 
