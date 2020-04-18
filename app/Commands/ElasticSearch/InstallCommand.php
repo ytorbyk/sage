@@ -63,7 +63,7 @@ class InstallCommand extends Command
             return (!empty($javaVersion) && strpos($javaVersion, 'No Java') === false) ? $javaVersion . '. Skip' : false;
         });
 
-        if (strpos($javaVersion, '1.8') !== 0) {
+        if (strpos((string)$javaVersion, '1.8') !== 0) {
             Brew::tap('homebrew/cask', 'homebrew/cask-versions');
             Cli::passthru('brew cask install homebrew/cask-versions/adoptopenjdk8');
         }
