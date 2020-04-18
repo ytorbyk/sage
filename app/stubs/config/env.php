@@ -83,7 +83,7 @@ return [
     ],
 
     'elasticsearch' => [
-        'formula' => 'elasticsearch@5.6',
+        'formula' => 'elasticsearch',
         'plugins' => [
             'analysis-phonetic',
             'analysis-icu'
@@ -94,7 +94,7 @@ return [
     ],
 
     'kibana' => [
-        'formula' => 'kibana@5.6',
+        'formula' => 'kibana',
         'domain' => 'kibana.test'
     ],
 
