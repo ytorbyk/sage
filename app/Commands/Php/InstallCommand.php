@@ -90,7 +90,7 @@ class InstallCommand extends Command
         });
 
         $this->task(sprintf('PHP v%s update ini files', $phpVersion), function () use ($phpVersion) {
-            $this->tunePhpIni();
+            $this->tunePhpIni($phpVersion);
             $this->tuneOpCache();
         });
 
@@ -185,7 +185,7 @@ class InstallCommand extends Command
     /**
      * @return void
      */
-    private function tunePhpIni()
+    private function tunePhpIni(string $phpVersion)
     {
         File::ensureDirExists(PeclHelper::getConfdPath());
 
@@ -194,7 +194,8 @@ class InstallCommand extends Command
 
         $phpZIni = Stub::get('php/z-performance.ini', [
             'TIMEZONE' => $this->getSystemTimeZone(),
-            'SMTP_CATCHER_PATH' => config('env.php.smtp_catcher_' . $smtpCatcher)
+            'SMTP_CATCHER_PATH' => config('env.php.smtp_catcher_' . $smtpCatcher),
+            'ERROR_LOG_FILE' => config('env.home_public') . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'php' . $phpVersion . '-error.log'
         ]);
         File::put(PeclHelper::getConfdPath() . 'z-performance.ini', $phpZIni);
     }
