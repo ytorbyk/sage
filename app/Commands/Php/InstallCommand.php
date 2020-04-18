@@ -103,6 +103,7 @@ class InstallCommand extends Command
         if ($phpVersion !== '5.6') {
             $this->installPeclExtension($phpVersion, Pecl::IMAGICK_EXTENSION);
             $this->installPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
+            $this->installPeclExtension($phpVersion, Pecl::REDIS_EXTENSION);
             MemcachedSession::configure();
         }
 

@@ -13,6 +13,7 @@ class Pecl
     const XDEBUG_EXTENSION = 'xdebug';
     const MEMCACHED_EXTENSION = 'memcached';
     const IMAGICK_EXTENSION = 'imagick';
+    const REDIS_EXTENSION = 'redis';
 
     const NORMAL_EXTENSION_TYPE = 'extension';
     const ZEND_EXTENSION_TYPE = 'zend_extension';
