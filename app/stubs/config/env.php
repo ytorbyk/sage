@@ -61,9 +61,15 @@ return [
             'zlib',
         ],
         'taps' => [
+            '7.0' => 'exolnet/homebrew-deprecated',
             '7.1' => 'exolnet/homebrew-deprecated'
         ],
+        'install_options' => [
+            '7.0' => ['--build-from-source'],
+            '7.1' => ['--build-from-source']
+        ],
         'versions' => [
+            '7.0',
             '7.1',
             '7.2',
             '7.3',
