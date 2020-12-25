@@ -149,6 +149,7 @@ class Apache
     {
         $highVersion = explode('.', $phpVersion);
         $highVersion = array_shift($highVersion);
+        $highVersion = $highVersion < 8 ? $highVersion : '';
 
         $phpModuleLoad = config('env.apache.php_module');
         $phpModuleLoad = str_replace('{version}', $phpVersion, $phpModuleLoad);
