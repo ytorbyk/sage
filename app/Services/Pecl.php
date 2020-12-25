@@ -25,6 +25,7 @@ class Pecl
         self::XDEBUG_EXTENSION => [
             '5.6' => '2.5.5',
             '7.0' => '2.7.2',
+            '7.1' => '2.9.8',
             'extension_type' => self::ZEND_EXTENSION_TYPE
         ]
     ];

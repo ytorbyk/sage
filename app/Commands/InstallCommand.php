@@ -64,7 +64,7 @@ class InstallCommand extends Command
         $this->call(SecureInstall::COMMAND);
         $this->call(PhpInstall::COMMAND);
 
-        $this->call(SwitchCommand::COMMAND, ['version' => '7.1']);
+        $this->call(SwitchCommand::COMMAND, ['version' => '7.2']);
 
         $this->call(RedisInstall::COMMAND);
         $this->call(MailHogInstall::COMMAND);

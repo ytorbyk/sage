@@ -18,7 +18,7 @@ class SwitchCommand extends Command
      * @var string
      */
     protected $signature = self::COMMAND
-        . ' {version? : PHP version like 5.6, 7.0, 7.1, 7.2}'
+        . ' {version? : PHP version like 7.2, 7.3, 7.4, 8.0}'
         . ' {--s|skip : Do not restart service}';
 
     /**

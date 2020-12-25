@@ -38,6 +38,14 @@ class InstallCommand extends Command
     protected $supportedSmtpCatchers = ['files', 'mailhog'];
 
     /**
+     * @var array
+     */
+    protected $skipExtension = [
+        '5.6' => [Pecl::IMAGICK_EXTENSION, Pecl::REDIS_EXTENSION, Pecl::MEMCACHED_EXTENSION],
+        '8.0' => [Pecl::IMAGICK_EXTENSION]
+    ];
+
+    /**
      * @return void
      */
     public function handle(): void
@@ -100,10 +108,22 @@ class InstallCommand extends Command
 
         $this->installPeclExtension($phpVersion, Pecl::XDEBUG_EXTENSION);
 
-        if ($phpVersion !== '5.6') {
+        if (empty($this->skipExtension[$phpVersion])
+            || !in_array(Pecl::IMAGICK_EXTENSION, $this->skipExtension[$phpVersion], true)
+        ) {
             $this->installPeclExtension($phpVersion, Pecl::IMAGICK_EXTENSION);
-            $this->installPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
+        }
+
+        if (empty($this->skipExtension[$phpVersion])
+            || !in_array(Pecl::REDIS_EXTENSION, $this->skipExtension[$phpVersion], true)
+        ) {
             $this->installPeclExtension($phpVersion, Pecl::REDIS_EXTENSION);
+        }
+
+        if (empty($this->skipExtension[$phpVersion])
+            || !in_array(Pecl::MEMCACHED_EXTENSION, $this->skipExtension[$phpVersion], true)
+        ) {
+            $this->installPeclExtension($phpVersion, Pecl::MEMCACHED_EXTENSION);
             MemcachedSession::configure();
         }
 

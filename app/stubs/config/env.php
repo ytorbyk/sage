@@ -49,7 +49,7 @@ return [
     ],
 
     'php' => [
-        'main_version' => '7.4',
+        'main_version' => '8.0',
         'brew_path' => '/usr/local/bin/php',
         'brew_etc_path' => '/usr/local/etc/php',
         'brew_lib_path' => '/usr/local/lib/php',
@@ -60,20 +60,11 @@ return [
             'imagemagick',
             'zlib',
         ],
-        'taps' => [
-            '7.0' => 'exolnet/homebrew-deprecated',
-            '7.1' => 'exolnet/homebrew-deprecated'
-        ],
-        'install_options' => [
-            '7.0' => ['--build-from-source'],
-            '7.1' => ['--build-from-source']
-        ],
         'versions' => [
-            '7.0',
-            '7.1',
             '7.2',
             '7.3',
-            '7.4'
+            '7.4',
+            '8.0'
         ],
         'smtp_catcher' => 'files',
         'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
