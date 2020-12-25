@@ -41,7 +41,7 @@ class Brew
      */
     public function isInstalled(string $formula): bool
     {
-        return in_array($formula, explode(PHP_EOL, Cli::runQuietly('brew list | grep ' . $formula)), true);
+        return in_array($formula, explode(PHP_EOL, Cli::runQuietly('brew list --formula | grep ' . $formula)), true);
     }
 
     /**
