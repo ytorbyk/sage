@@ -80,7 +80,7 @@ return [
     ],
 
     'elasticsearch' => [
-        'formula' => 'elasticsearch',
+        'formula' => 'elasticsearch-full',
         'plugins' => [
             'analysis-phonetic',
             'analysis-icu'
@@ -91,7 +91,7 @@ return [
     ],
 
     'kibana' => [
-        'formula' => 'kibana',
+        'formula' => 'kibana-full',
         'domain' => 'kibana.test'
     ],
 

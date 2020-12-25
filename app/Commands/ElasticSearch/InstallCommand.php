@@ -31,6 +31,7 @@ class InstallCommand extends Command
 
         $this->ensureJavaInstalled();
 
+        Brew::tap('elastic/tap');
         $needInstall = $this->installFormula((string)config('env.elasticsearch.formula'));
         Brew::link((string)config('env.elasticsearch.formula'));
 
@@ -65,7 +66,7 @@ class InstallCommand extends Command
 
         if (strpos((string)$javaVersion, '1.8') !== 0) {
             Brew::tap('homebrew/cask', 'homebrew/cask-versions');
-            Cli::passthru('brew cask install homebrew/cask-versions/adoptopenjdk8');
+            Cli::passthru('brew install homebrew/cask-versions/adoptopenjdk8 --cask');
         }
     }
 
