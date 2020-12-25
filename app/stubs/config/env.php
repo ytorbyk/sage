@@ -60,7 +60,15 @@ return [
             'imagemagick',
             'zlib',
         ],
+        'taps' => [
+            '5.6' => 'shivammathur/php',
+            '7.0' => 'shivammathur/php',
+            '7.1' => 'shivammathur/php'
+        ],
         'versions' => [
+            '5.6',
+            '7.0',
+            '7.1',
             '7.2',
             '7.3',
             '7.4',

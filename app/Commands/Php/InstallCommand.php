@@ -150,8 +150,8 @@ class InstallCommand extends Command
             });
         }
 
-        $this->task(sprintf('[%s] configure', $extension), function () use ($extension) {
-            PeclHelper::configure($extension);
+        $this->task(sprintf('[%s] configure', $extension), function () use ($phpVersion, $extension) {
+            PeclHelper::configure($extension, $phpVersion);
         });
     }
 

@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static string getExtensionDirectory()
  * @method static void updatePeclChannel()
  * @method static void install(string $extension, string $phpVersion)
- * @method static void configure($extension)
+ * @method static void configure(string $extension, string $phpVersion)
  * @method static void uninstall(string $extension, string $phpVersion)
  * @method static void deleteConfigs(string $phpVersion)
  *

@@ -139,13 +139,18 @@ class Pecl
 
     /**
      * @param string $extension
+     * @param string $phpVersion
      * @return void
      */
-    public function configure($extension): void
+    public function configure(string $extension, string $phpVersion): void
     {
         $stubName = "php/ext-{$extension}.ini";
+        $stubNameVersion = "php/ext-{$extension}-{$phpVersion}.ini";
 
-        if (Stub::isExist($stubName)) {
+        if (Stub::isExist($stubNameVersion)) {
+            $this->removeIniDefinition($extension);
+            File::put($this->iniPath($extension), Stub::get($stubNameVersion));
+        } elseif (Stub::isExist($stubName)) {
             $this->removeIniDefinition($extension);
             File::put($this->iniPath($extension), Stub::get($stubName));
         }
