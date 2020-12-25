@@ -1,7 +1,7 @@
 
 ## Sage
 
-Sage is helper for development environment on macOS (High Sierra, Mojave).
+Sage is helper for development environment on macOS (High Sierra, Mojave, Catalina and Big Sur on intel).
 
 
 ## Installation
@@ -24,7 +24,7 @@ brew upgrade
 
 2. Download phar package from [the latest release](https://github.com/ytorbyk/sage/releases/latest) and put it in `$HOME/bin` folder.
 ```bash
-curl -L https://github.com/ytorbyk/sage/releases/download/0.12.3/sage.phar > $HOME/bin/sage
+curl -L https://github.com/ytorbyk/sage/releases/download/0.13.0/sage.phar > $HOME/bin/sage
 chmod +x $HOME/bin/sage
 ```
 
