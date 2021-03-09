@@ -95,6 +95,7 @@ class XdebugCommand extends Command
     private function enableAutostart(): void
     {
         $configContent = File::get(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION));
+        $configContent = str_replace('#xdebug.start_with_request=yes', 'xdebug.start_with_request=yes', $configContent);
         $configContent = str_replace('xdebug.remote_autostart=0', 'xdebug.remote_autostart=1', $configContent);
         File::put(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
     }
@@ -122,6 +123,9 @@ class XdebugCommand extends Command
     private function disableAutostart(): void
     {
         $configContent = File::get(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION));
+        if (strpos('#xdebug.start_with_request=yes', $configContent) === false) {
+            $configContent = str_replace('xdebug.start_with_request=yes', '#xdebug.start_with_request=yes', $configContent);
+        }
         $configContent = str_replace('xdebug.remote_autostart=1', 'xdebug.remote_autostart=0', $configContent);
         File::put(PeclHelper::iniPath(Pecl::XDEBUG_EXTENSION), $configContent);
     }
