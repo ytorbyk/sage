@@ -71,7 +71,7 @@ class BrewService
             }
 
             $services[$serviceLine[0]] = [
-                self::SERVICE_STARTED => ($serviceLine[1] === 'started'),
+                self::SERVICE_STARTED => ($serviceLine[1] === 'started' || $serviceLine[1] === 'unknown'),
                 self::SERVICE_ROOT => null
             ];
 
