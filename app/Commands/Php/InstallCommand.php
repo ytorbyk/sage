@@ -42,7 +42,6 @@ class InstallCommand extends Command
      */
     protected $skipExtension = [
         '5.6' => [Pecl::IMAGICK_EXTENSION, Pecl::REDIS_EXTENSION, Pecl::MEMCACHED_EXTENSION],
-        '8.0' => [Pecl::IMAGICK_EXTENSION]
     ];
 
     /**

@@ -72,12 +72,14 @@ class Brew
      */
     public function install(string $formula, array $options = [], array $tap = null): string
     {
+        $vendor = '';
         if (!empty($tap)) {
             $this->tap(... $tap);
+            $vendor = array_shift($tap) . '/';
         }
 
         try {
-            return Cli::run('brew install ' . $formula . ' ' . implode(' ', $options));
+            return Cli::run('brew install ' . $vendor . $formula . ' ' . implode(' ', $options));
         } catch (ProcessFailedException $e) {
             throw new \DomainException('Brew was unable to install [' . $formula . '].', 0, $e);
         }

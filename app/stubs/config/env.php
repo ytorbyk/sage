@@ -63,7 +63,12 @@ return [
         'taps' => [
             '5.6' => 'shivammathur/php',
             '7.0' => 'shivammathur/php',
-            '7.1' => 'shivammathur/php'
+            '7.1' => 'shivammathur/php',
+            '7.2' => 'shivammathur/php',
+            '7.3' => 'shivammathur/php',
+            '7.4' => 'shivammathur/php',
+            '8.0' => 'shivammathur/php',
+            '8.1' => 'shivammathur/php',
         ],
         'versions' => [
             '5.6',
@@ -72,7 +77,8 @@ return [
             '7.2',
             '7.3',
             '7.4',
-            '8.0'
+            '8.0',
+            '8.1',
         ],
         'smtp_catcher' => 'files',
         'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
