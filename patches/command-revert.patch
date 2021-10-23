@@ -8,16 +8,7 @@ Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
 ===================================================================
 --- src/Commands/Command.php	(date 1546196279000)
 +++ src/Commands/Command.php	(date 1546196279000)
-@@ -50,7 +50,7 @@
-     /**
-      * Returns a menu builder.
-      */
--    public function menu(string $title, array $options = []): Menu
-+    public function menu(string $title, array $options = [])
-     {
-         return $this->__call('menu', func_get_args());
-     }
-@@ -59,7 +59,7 @@
+@@ -51,7 +51,7 @@
       * Performs the given task, outputs and
       * returns the result.
       */
