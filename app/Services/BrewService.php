@@ -28,7 +28,7 @@ class BrewService
      */
     public function getServicesStatus(): array
     {
-        return array_map(function ($serviceData) {
+        return array_map(static function ($serviceData) {
             return $serviceData[self::SERVICE_STARTED] ?? false;
         }, $this->getServices());
     }
@@ -60,9 +60,21 @@ class BrewService
      */
     private function getServices(): array
     {
+        return array_merge(
+            $this->parseServicesData(explode(PHP_EOL, Cli::run('brew services list'))),
+            $this->parseServicesData(explode(PHP_EOL, Cli::run('sudo brew services list')), true)
+        );
+    }
+
+    /**
+     * @param array $serviceLines
+     * @param bool $skipStopped
+     * @return array
+     */
+    private function parseServicesData(array $serviceLines, bool $skipStopped = false): array
+    {
         $services = [];
 
-        $serviceLines = explode(PHP_EOL, Cli::run('brew services list'));
         array_shift($serviceLines);
         foreach ($serviceLines as $serviceLine) {
             $serviceLine = array_values(array_filter(explode(' ', $serviceLine)));
@@ -70,8 +82,13 @@ class BrewService
                 continue;
             }
 
+            $isStarted = ($serviceLine[1] === 'started' || $serviceLine[1] === 'unknown');
+            if ($isStarted === false && $skipStopped === true) {
+                continue;
+            }
+
             $services[$serviceLine[0]] = [
-                self::SERVICE_STARTED => ($serviceLine[1] === 'started' || $serviceLine[1] === 'unknown'),
+                self::SERVICE_STARTED => $isStarted,
                 self::SERVICE_ROOT => null
             ];
 
@@ -79,7 +96,6 @@ class BrewService
                 $services[$serviceLine[0]][self::SERVICE_ROOT] = ($serviceLine[2] === 'root');
             }
         }
-
         return $services;
     }
 
