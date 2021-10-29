@@ -9,7 +9,7 @@ Sage is helper for development environment on macOS (High Sierra, Mojave, Catali
 1. Since Sage depends on Brew. Install or update [Homebrew](https://brew.sh/) to the latest version using brew update.
 ```bash
 # if not installed
-/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # add the next line into your ~/.bash_profile file (create if not exists)
 
