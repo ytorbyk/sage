@@ -7,6 +7,7 @@ namespace App\Commands\Kibana;
 use App\Command;
 use App\Facades\Brew;
 use App\Facades\ApacheHelper;
+use App\Facades\Cli;
 use App\Facades\Secure;
 
 class InstallCommand extends Command
@@ -30,6 +31,8 @@ class InstallCommand extends Command
     {
         $this->info('Install Kibana:');
 
+        $this->ensureJavaInstalled();
+
         $needInstall = $this->installFormula((string)config('env.kibana.formula'));
         Brew::link((string)config('env.kibana.formula'));
 
@@ -40,6 +43,22 @@ class InstallCommand extends Command
             $this->call(StartCommand::COMMAND);
         } else {
             $this->call(RestartCommand::COMMAND);
+        }
+    }
+
+    /**
+     * @return void
+     */
+    private function ensureJavaInstalled(): void
+    {
+        $javaVersion = $this->task('Ensure Java VM is installed', function () {
+            $javaVersion = Cli::run('java -version 2>&1 | head -n 1 | cut -d\'"\' -f2');
+            $javaVersion = trim($javaVersion);
+            return (!empty($javaVersion) && strpos($javaVersion, 'No Java') === false) ? $javaVersion . '. Skip' : false;
+        });
+
+        if (strpos((string)$javaVersion, '1.8') !== 0) {
+            Cli::passthru('brew install --cask temurin8');
         }
     }
 }

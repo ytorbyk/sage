@@ -65,8 +65,7 @@ class InstallCommand extends Command
         });
 
         if (strpos((string)$javaVersion, '1.8') !== 0) {
-            Brew::tap('homebrew/cask', 'homebrew/cask-versions');
-            Cli::passthru('brew install homebrew/cask-versions/adoptopenjdk8 --cask');
+            Cli::passthru('brew install --cask temurin8');
         }
     }
 
