@@ -60,6 +60,10 @@ class InstallCommand extends Command
         $this->setupSmtpCatcher();
 
         foreach ($phpVersions as $phpVersion) {
+            if ($phpVersion === '7.3') {
+                continue;
+            }
+
             $this->info(sprintf('Install PHP v%s', $phpVersion));
             $this->installVersion($phpVersion);
         }
@@ -226,6 +230,7 @@ class InstallCommand extends Command
     {
         $mailDir = (string)config('env.php.mail_path');
         $smtpCatcherPath = (string)config('env.php.smtp_catcher_files');
+        File::ensureDirExists((string)config('env.home'));
         File::ensureDirExists($mailDir);
 
         $smtpCatcher = Stub::get('php/smtp_catcher.php', [

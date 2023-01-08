@@ -12,8 +12,6 @@ use App\Commands\Php\UninstallCommand as PhpUninstall;
 use App\Commands\Memcached\UninstallCommand as MemcachedUninstall;
 use App\Commands\Redis\UninstallCommand as RedisUninstall;
 use App\Commands\MailHog\UninstallCommand as MailHogUninstall;
-use App\Commands\ElasticSearch\UninstallCommand as ElasticSearchUninstall;
-use App\Commands\Kibana\UninstallCommand as KibanaUninstall;
 use App\Commands\RabbitMq\UninstallCommand as RabbitMqUninstall;
 use App\Facades\Brew;
 use App\Facades\File;
@@ -44,6 +42,10 @@ class UninstallCommand extends Command
             $this->info('Brew is not installed. Nothing to uninstall!');
         }
 
+        foreach (config('env.software') as $formula) {
+            $this->uninstallFormula($formula);
+        }
+
         $this->call(DnsMasqUninstall::COMMAND);
         $this->call(MySqlUninstall::COMMAND, ['--force' => $this->option('force')]);
         $this->call(ApacheUninstall::COMMAND, ['--force' => $this->option('force')]);
@@ -51,13 +53,7 @@ class UninstallCommand extends Command
         $this->call(MemcachedUninstall::COMMAND);
         $this->call(RedisUninstall::COMMAND);
         $this->call(MailHogUninstall::COMMAND);
-        $this->call(ElasticSearchUninstall::COMMAND);
-        $this->call(KibanaUninstall::COMMAND);
         $this->call(RabbitMqUninstall::COMMAND);
-
-        foreach (config('env.software') as $formula) {
-            $this->uninstallFormula($formula);
-        }
 
         if ($this->option('force')) {
             File::deleteDirectory((string)config('env.home'));

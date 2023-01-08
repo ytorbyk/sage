@@ -34,13 +34,17 @@ class UninstallCommand extends Command
     {
         $phpVersions = config('env.php.versions');
         foreach ($phpVersions as $phpVersion) {
+            if ($phpVersion === '7.3') {
+                continue;
+            }
+
             $this->info(sprintf('Uninstall PHP v%s', $phpVersion));
             $this->uninstallVersion($phpVersion);
         }
 
-        foreach (config('env.php.dependencies') as $formula) {
-            Brew::ensureUninstalled($formula);
-        }
+//        foreach (config('env.php.dependencies') as $formula) {
+//            Brew::ensureUninstalled($formula);
+//        }
 
         File::deleteDirectory((string)config('env.php.brew_etc_path'));
         File::deleteDirectory((string)config('env.php.brew_lib_path'));

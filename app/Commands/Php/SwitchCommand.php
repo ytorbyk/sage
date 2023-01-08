@@ -8,6 +8,7 @@ use App\Command;
 use App\Commands\Apache\RestartCommand;
 use App\Facades\Brew;
 use App\Facades\ApacheHelper;
+use App\Facades\File;
 use App\Facades\PhpHelper;
 
 class SwitchCommand extends Command
@@ -19,7 +20,8 @@ class SwitchCommand extends Command
      */
     protected $signature = self::COMMAND
         . ' {version? : PHP version like 7.2, 7.3, 7.4, 8.0}'
-        . ' {--s|skip : Do not restart service}';
+        . ' {--s|skip : Do not restart service}'
+        . ' {--r|restart : Restart service}';
 
     /**
      * @var string
@@ -60,11 +62,17 @@ class SwitchCommand extends Command
             PhpHelper::switchTo($phpVersion);
         });
 
-        $this->task('Update apache config', function () use ($phpVersion) {
-            ApacheHelper::linkPhp($phpVersion);
-        });
 
-        if (!$this->option('skip')) {
+        if (File::isFile((string)config('env.apache.config'))) {
+            $this->task('Update apache config', function () use ($phpVersion) {
+                ApacheHelper::linkPhp($phpVersion);
+            });
+        }
+
+        if (!$this->option('skip')
+            &&
+            (!config('env.php.skip_apache_restart') || $this->option('restart'))
+        ) {
             $this->call(RestartCommand::COMMAND);
         }
     }

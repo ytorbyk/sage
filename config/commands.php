@@ -63,8 +63,6 @@ return [
         App\Commands\Php\InstallCommand::class,
         App\Commands\Php\UninstallCommand::class,
         App\Commands\Secure\InstallCommand::class,
-        App\Commands\ElasticSearch\InstallCommand::class,
-        App\Commands\ElasticSearch\UninstallCommand::class,
     ],
 
     /*

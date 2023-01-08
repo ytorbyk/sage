@@ -8,8 +8,6 @@ return [
         'memcached',
         'redis',
         'mailhog',
-        'elasticsearch',
-        'kibana',
         'rabbitmq'
     ],
 
@@ -49,7 +47,7 @@ return [
     ],
 
     'php' => [
-        'main_version' => '8.0',
+        'main_version' => '8.2',
         'brew_path' => '/usr/local/bin/php',
         'brew_etc_path' => '/usr/local/etc/php',
         'brew_lib_path' => '/usr/local/lib/php',
@@ -69,6 +67,7 @@ return [
             '7.4' => 'shivammathur/php',
             '8.0' => 'shivammathur/php',
             '8.1' => 'shivammathur/php',
+            '8.2' => 'shivammathur/php',
         ],
         'versions' => [
             '5.6',
@@ -79,7 +78,9 @@ return [
             '7.4',
             '8.0',
             '8.1',
+            '8.2',
         ],
+        'skip_apache_restart' => false,
         'smtp_catcher' => 'files',
         'smtp_catcher_mailhog' => '/usr/local/bin/MailHog sendmail no@email',
         'mail_path' => config('env.home_public') . DIRECTORY_SEPARATOR . 'mail',
@@ -91,22 +92,6 @@ return [
         'dependencies' => [
             'libmemcached',
         ]
-    ],
-
-    'elasticsearch' => [
-        'formula' => 'elasticsearch-full',
-        'plugins' => [
-            'analysis-phonetic',
-            'analysis-icu'
-        ],
-        'brew_config_dir_path' => '/usr/local/etc/elasticsearch',
-        'data_dir_path' => '/usr/local/var/elasticsearch',
-        'log_dir_path' => '/usr/local/var/log/elasticsearch/'
-    ],
-
-    'kibana' => [
-        'formula' => 'kibana-full',
-        'domain' => 'kibana.test'
     ],
 
     'mailhog' => [

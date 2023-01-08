@@ -26,6 +26,9 @@ class Pecl
             '5.6' => '2.5.5',
             '7.0' => '2.7.2',
             '7.1' => '2.9.8',
+            '7.2' => '3.1.5',
+            '7.3' => '3.1.5',
+            '7.4' => '3.1.5',
             'extension_type' => self::ZEND_EXTENSION_TYPE
         ]
     ];
@@ -115,7 +118,7 @@ class Pecl
         Cli::run('pecl channel-update pecl.php.net');
     }
 
-    /**
+    /**`
      * @param string $extension
      * @param string $phpVersion
      * @return void
